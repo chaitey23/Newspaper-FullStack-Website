@@ -166,8 +166,8 @@ const Login = () => {
                         </Link>
                     </p>
                 </div>
-                <div className='p-6 flex items-center justify-center'>
-                    <Lottie className="w-full h-64 sm:h-80 md:h-96 lg:h-auto" animationData={loginAnimation} loop={true}></Lottie>
+                <div className='p-6 items-center justify-center hidden lg:flex'>
+                    <Lottie animationData={loginAnimation} loop={true}></Lottie>
                 </div>
             </div>
         </div>

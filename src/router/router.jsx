@@ -3,6 +3,8 @@ import MainLayout from "../layouts/MainLayout";
 import Home from "../Pages/Home/Home";
 import Login from "../Pages/Login/Login";
 import Register from "../Pages/Register/Register";
+import AllArticles from "../Pages/AllArticles/AllArticles";
+import Subscription from "../Pages/Subscription/Subscription";
 export const router = createBrowserRouter([
     {
         path: "/",
@@ -18,6 +20,14 @@ export const router = createBrowserRouter([
         {
             path: "/register",
             Component: Register
+        },
+        {
+            path: "/all-articles",
+            Component: AllArticles
+        },
+        {
+            path: "/subscription",
+            Component: Subscription
         }
 
 
