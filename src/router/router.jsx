@@ -5,34 +5,70 @@ import Login from "../Pages/Login/Login";
 import Register from "../Pages/Register/Register";
 import AllArticles from "../Pages/AllArticles/AllArticles";
 import Subscription from "../Pages/Subscription/Subscription";
+import PrivateRoute from "./PrivateRoute/PrivateRoute";
+import AddArticles from "../Pages/AddArticles/AddArticles";
+import MyArticles from "../Pages/MyArticles/MyArticles";
+import MyProfile from "../Pages/MyProfile/MyProfile";
+import AdminRoute from "./AdminRoute/AdminRoute";
+import DashBoardLayout from "../layouts/DashBoardLayout/DashBoardLayout";
+import DashBoardHome from "../Pages/DashBoard/DashBoardHome";
+
 export const router = createBrowserRouter([
     {
         path: "/",
         Component: MainLayout,
         children: [{
             index: true,
-            Component: Home
+            element: <Home></Home>
         },
         {
             path: "/login",
-            Component: Login
+            element: <Login></Login>
         },
         {
             path: "/register",
-            Component: Register
+            element: <Register></Register>
         },
         {
             path: "/all-articles",
-            Component: AllArticles
+            element: <AllArticles></AllArticles>
         },
         {
             path: "/subscription",
-            Component: Subscription
+            element: <Subscription></Subscription>
+        },
+        {
+            path: "/add-articles",
+            element: <PrivateRoute>
+                <AddArticles></AddArticles>
+            </PrivateRoute>
+        },
+        {
+            path: "/my-articles",
+            element: <PrivateRoute>
+                <MyArticles></MyArticles>
+            </PrivateRoute>
+        },
+        {
+            path: "/profile",
+            element: <PrivateRoute>
+                <MyProfile></MyProfile>
+            </PrivateRoute>
+        },
+        {
+            path: "/dashboard",
+            element: <AdminRoute>
+                <DashBoardLayout></DashBoardLayout>
+            </AdminRoute>,
+            children: [{
+                index: true,
+                element: <DashBoardHome></DashBoardHome>
+            }]
         }
-
 
 
 
         ]
     },
+
 ]);
