@@ -4,6 +4,7 @@ import { useArticles } from '../../hooks/useArticles';
 import { usePublishers } from '../../hooks/usePublishers';
 import { useTags } from '../../hooks/useTags';
 import { Link } from 'react-router';
+import { QueryClient } from '@tanstack/react-query';
 
 
 const ArticlesList = () => {
@@ -76,8 +77,6 @@ const ArticlesList = () => {
 
     return (
         <div className="container mx-auto px-4 py-8">
-            <h2 className="text-3xl font-bold text-center mb-8 text-gray-800">All Articles</h2>
-
             {/* Search and Filter Section */}
             <div className="bg-white p-6 rounded-lg shadow-md mb-8">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -203,17 +202,18 @@ const ArticlesList = () => {
 
                                 <div className="flex justify-between items-center">
                                     <span className="text-sm text-gray-500">{article.views} views</span>
-
                                     <Link
                                         to={`/article/${article._id}`}
                                         className={`px-4 py-2 rounded text-white transition-colors ${article.isPremium && !user?.premiumTaken
                                             ? 'bg-gray-400 cursor-not-allowed'
                                             : 'bg-[#c99e66] hover:bg-[#c99e66]'
                                             }`}
-                                        onClick={(e) => {
+                                        onClick={() => {
                                             if (article.isPremium && !user?.premiumTaken) {
-                                                e.preventDefault();
-                                                alert('Premium subscription required to read this article');
+                                                alert('Premium subscription required');
+                                            } else {
+                                                QueryClient.invalidateQueries({ queryKey: ['articles'] });
+
                                             }
                                         }}
                                     >

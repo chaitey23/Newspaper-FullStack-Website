@@ -12,6 +12,7 @@ import MyProfile from "../Pages/MyProfile/MyProfile";
 import AdminRoute from "./AdminRoute/AdminRoute";
 import DashBoardLayout from "../layouts/DashBoardLayout/DashBoardLayout";
 import DashBoardHome from "../Pages/DashBoard/DashBoardHome";
+import ArticleDetails from "../Pages/ArticleDetails/ArticleDetails";
 
 export const router = createBrowserRouter([
     {
@@ -32,6 +33,12 @@ export const router = createBrowserRouter([
         {
             path: "/all-articles",
             element: <AllArticles></AllArticles>
+        },
+        {
+            path: "/article/:id",
+            element: <PrivateRoute>
+                <ArticleDetails></ArticleDetails>
+            </PrivateRoute>
         },
         {
             path: "/subscription",

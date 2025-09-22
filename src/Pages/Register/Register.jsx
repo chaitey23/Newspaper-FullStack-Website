@@ -1,17 +1,25 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import SocialLogin from '../../Components/SocialLogin/SocialLogin';
-import { Link } from 'react-router';
+import { Link, useLocation, useNavigate } from 'react-router';
 import { toast } from 'react-toastify';
 import { AuthContext } from '../../Context/AuthContext/AuthContext';
 
 const Register = () => {
-    const { createUser, loading } = useContext(AuthContext)
+    const { createUser, loading, user } = useContext(AuthContext)
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const { register, handleSubmit, formState: { errors }, watch, reset } = useForm();
+    const navigate = useNavigate();
+    const location = useLocation();
+    const from = location.state?.from?.pathname || "/";
 
     const password = watch("password", "");
+    useEffect(() => {
+        if (!loading && user) {
+            navigate(from, { replace: true });
+        }
+    }, [loading, user, from, navigate]);
 
     const onSubmit = async (data) => {
         try {

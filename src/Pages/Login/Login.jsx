@@ -1,11 +1,11 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import loginAnimation from '../../assets/Login.json'
 
 import SocialLogin from '../../Components/SocialLogin/SocialLogin';
-import { Link } from 'react-router';
+import { Link, useLocation, useNavigate } from 'react-router';
 import { AuthContext } from '../../Context/AuthContext/AuthContext';
 import Lottie from 'lottie-react';
 
@@ -13,14 +13,23 @@ const Login = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [rememberMe, setRememberMe] = useState(false);
     const { register, handleSubmit, formState: { errors }, reset } = useForm();
-    const { signInUser, loading } = useContext(AuthContext)
+    const { signInUser, loading, user } = useContext(AuthContext)
 
+    const navigate = useNavigate();
+    const location = useLocation();
+    const from = location.state?.from?.pathname || "/";
+    useEffect(() => {
+        if (!loading && user) {
+            navigate(from, { replace: true });
+        }
+    }, [loading, user, from, navigate]);
     const onSubmit = async (data) => {
         try {
             const result = await signInUser(data.email, data.password)
 
             toast.success('Login successful! Welcome back to NewsPortal.');
             reset()
+            // navigate(from, { replace: true })
             console.log("login User", result.user);
 
 
