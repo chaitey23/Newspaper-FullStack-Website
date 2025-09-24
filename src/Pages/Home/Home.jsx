@@ -1,10 +1,11 @@
 import React from 'react';
+import TrendingArticles from '../../Components/TrendingArticles/TrendingArticles';
 
 const Home = () => {
     return (
-        <div>
-            <h2 className='text-[#c99e66]'>This is home</h2>
-        </div>
+        <>
+            <TrendingArticles></TrendingArticles>
+        </>
     );
 };
 
