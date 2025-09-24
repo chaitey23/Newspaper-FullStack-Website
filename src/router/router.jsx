@@ -13,6 +13,8 @@ import AdminRoute from "./AdminRoute/AdminRoute";
 import DashBoardLayout from "../layouts/DashBoardLayout/DashBoardLayout";
 import DashBoardHome from "../Pages/DashBoard/DashBoardHome";
 import ArticleDetails from "../Pages/ArticleDetails/ArticleDetails";
+import MyAddArticlesDetails from "../Pages/MyAddArticlesDetails/MyAddArticlesDetails";
+import EditArticle from "../Pages/EditArticle/EditArticle";
 
 export const router = createBrowserRouter([
     {
@@ -40,12 +42,13 @@ export const router = createBrowserRouter([
                 <ArticleDetails></ArticleDetails>
             </PrivateRoute>
         },
+
         {
             path: "/subscription",
             element: <Subscription></Subscription>
         },
         {
-            path: "/add-articles",
+            path: "/add-article",
             element: <PrivateRoute>
                 <AddArticles></AddArticles>
             </PrivateRoute>
@@ -54,6 +57,18 @@ export const router = createBrowserRouter([
             path: "/my-articles",
             element: <PrivateRoute>
                 <MyArticles></MyArticles>
+            </PrivateRoute>
+        },
+        {
+            path: "/my-article/:id",
+            element: <PrivateRoute>
+                <MyAddArticlesDetails></MyAddArticlesDetails>
+            </PrivateRoute>
+        },
+        {
+            path: "/edit-article/:id",
+            element: <PrivateRoute>
+                <EditArticle></EditArticle>
             </PrivateRoute>
         },
         {
