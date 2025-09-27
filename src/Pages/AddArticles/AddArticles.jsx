@@ -3,7 +3,8 @@ import Select from 'react-select';
 import { toast } from 'react-hot-toast';
 import { AuthContext } from '../../Context/AuthContext/AuthContext';
 import useAxiosSecure from '../../hooks/useAxiosSecure';
-import { useNavigate } from 'react-router';
+import { useNavigate } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 
 const AddArticles = () => {
     const [formData, setFormData] = useState({
@@ -20,6 +21,21 @@ const AddArticles = () => {
     const axiosSecure = useAxiosSecure();
     const { user } = useContext(AuthContext);
 
+    // Fetch publishers from database
+    const { data: publishers = [], isLoading: publishersLoading } = useQuery({
+        queryKey: ['publishers'],
+        queryFn: async () => {
+            const res = await axiosSecure.get('/publishers');
+            return res.data;
+        }
+    });
+
+    // Convert publishers to options for react-select
+    const publisherOptions = publishers.map(publisher => ({
+        value: publisher._id,
+        label: publisher.name
+    }));
+
     const tagOptions = [
         { value: 'technology', label: 'Technology' },
         { value: 'politics', label: 'Politics' },
@@ -29,15 +45,6 @@ const AddArticles = () => {
         { value: 'business', label: 'Business' },
         { value: 'science', label: 'Science' },
         { value: 'education', label: 'Education' }
-    ];
-
-    const publisherOptions = [
-        { value: 'prothom-alo', label: 'Prothom Alo' },
-        { value: 'jugantor', label: 'Jugantor' },
-        { value: 'ittefaq', label: 'Ittefaq' },
-        { value: 'kalerkontho', label: 'Kaler Kantho' },
-        { value: 'bd-news', label: 'BD News' },
-        { value: 'daily-star', label: 'The Daily Star' }
     ];
 
     // ImgBB upload
@@ -151,8 +158,16 @@ const AddArticles = () => {
 
                         <div>
                             <label htmlFor="publisher" className="block text-sm font-semibold text-gray-700 mb-2">Publisher *</label>
-                            <Select id="publisher" options={publisherOptions} value={publisherOptions.find(pub => pub.value === formData.publisher)}
-                                onChange={handlePublisherChange} placeholder="Select publisher" isSearchable classNamePrefix="react-select" />
+                            <Select
+                                id="publisher"
+                                options={publisherOptions}
+                                value={publisherOptions.find(pub => pub.value === formData.publisher)}
+                                onChange={handlePublisherChange}
+                                placeholder={publishersLoading ? "Loading publishers..." : "Select publisher"}
+                                isSearchable
+                                classNamePrefix="react-select"
+                            />
+                            {publishersLoading && <p className="mt-2 text-gray-500 text-sm">Loading publishers from database...</p>}
                         </div>
 
                         <div>

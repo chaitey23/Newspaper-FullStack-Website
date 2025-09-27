@@ -8,7 +8,9 @@ import {
     FaCog,
     FaSignOutAlt,
     FaBars,
-    FaTimes
+    FaTimes,
+    FaNewspaper,
+    FaUserPlus
 } from 'react-icons/fa';
 import Navbar from '../../Pages/Shared/Navbar/Navbar';
 import { AuthContext } from '../../Context/AuthContext/AuthContext';
@@ -73,6 +75,35 @@ const DashBoardLayout = () => {
                                     <span>All Users</span>
                                 </NavLink>
                             </li>
+                            <li>
+                                <NavLink
+                                    to='all-articles'
+                                    className={({ isActive }) =>
+                                        `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-sm font-medium ${isActive
+                                            ? 'bg-gradient-to-r from-[#c99e66] to-amber-600 text-white shadow-lg'
+                                            : 'text-slate-300 hover:bg-slate-700 hover:text-white'
+                                        }`
+                                    }
+                                >
+                                    <FaNewspaper className="text-base" />
+                                    <span>All Articles</span>
+                                </NavLink>
+                            </li>
+                            <li>
+                                <NavLink
+                                    to='add-publisher'
+                                    className={({ isActive }) =>
+                                        `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-sm font-medium ${isActive
+                                            ? 'bg-gradient-to-r from-[#c99e66] to-amber-600 text-white shadow-lg'
+                                            : 'text-slate-300 hover:bg-slate-700 hover:text-white'
+                                        }`
+                                    }
+                                >
+                                    <FaUserPlus className="text-base" />
+                                    <span>Add Publisher</span>
+                                </NavLink>
+                            </li>
+                            <li></li>
                             <li>
                                 <a className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-700 hover:text-white transition-all duration-200 text-sm font-medium">
                                     <FaChartBar className="text-base" />
@@ -188,6 +219,36 @@ const DashBoardLayout = () => {
                                     >
                                         <FaUsers className="text-base" />
                                         <span>All Users</span>
+                                    </NavLink>
+                                </li>
+                                <li>
+                                    <NavLink
+                                        to='all-articles'
+                                        className={({ isActive }) =>
+                                            `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-sm font-medium ${isActive
+                                                ? 'bg-gradient-to-r from-[#c99e66] to-amber-600 text-white shadow-lg'
+                                                : 'text-slate-300 hover:bg-slate-700 hover:text-white'
+                                            }`
+                                        }
+                                        onClick={() => document.getElementById('my-drawer-2').checked = false}
+                                    >
+                                        <FaNewspaper className="text-base" />
+                                        <span>All Articles</span>
+                                    </NavLink>
+                                </li>
+                                <li>
+                                    <NavLink
+                                        to='add-publisher'
+                                        className={({ isActive }) =>
+                                            `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-sm font-medium ${isActive
+                                                ? 'bg-gradient-to-r from-[#c99e66] to-amber-600 text-white shadow-lg'
+                                                : 'text-slate-300 hover:bg-slate-700 hover:text-white'
+                                            }`
+                                        }
+                                        onClick={() => document.getElementById('my-drawer-2').checked = false}
+                                    >
+                                        <FaUserPlus className="text-base" />
+                                        <span>Add Publisher</span>
                                     </NavLink>
                                 </li>
                                 <li>

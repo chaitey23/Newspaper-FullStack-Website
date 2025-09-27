@@ -38,7 +38,9 @@ const MyArticles = () => {
         const statusConfig = {
             pending: { color: 'bg-yellow-100 text-yellow-800', text: 'Pending' },
             approved: { color: 'bg-green-100 text-green-800', text: 'Approved' },
-            declined: { color: 'bg-red-100 text-red-800', text: 'Declined' }
+            declined: { color: 'bg-red-100 text-red-800', text: 'Declined' },
+            rejected: { color: 'bg-red-100 text-red-800', text: 'Rejected' } // <-- add this
+
         };
 
         const config = statusConfig[status] || statusConfig.pending;
@@ -206,14 +208,15 @@ const MyArticles = () => {
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <div className="flex items-center space-x-2">
                                                     <StatusBadge status={article.status} />
-                                                    {article.status === 'declined' && article.declineReason && (
+                                                    {(article.status === 'declined' || article.status === 'rejected') && article.declineReason && (
                                                         <button
                                                             onClick={() => handleViewReason(article)}
-                                                            className="text-[#c99e66] hover:text-[#b58d55] text-sm font-medium underline"
+                                                            className="text-[#c99e66] hover:text-[#b58d55] text-sm font-medium underline cursor-pointer"
                                                         >
                                                             View Reason
                                                         </button>
                                                     )}
+
                                                 </div>
                                             </td>
 
@@ -299,7 +302,7 @@ const MyArticles = () => {
                             <div className="px-4 py-5 sm:p-6">
                                 <dt className="text-sm font-semibold text-gray-600 truncate">Declined</dt>
                                 <dd className="mt-1 text-3xl font-bold text-red-600">
-                                    {articles.filter(a => a.status === 'declined').length}
+                                    {articles.filter(a => a.status === 'rejected').length}
                                 </dd>
                             </div>
                         </div>
@@ -309,7 +312,7 @@ const MyArticles = () => {
 
             {/* Decline Reason Modal */}
             {showDeclineModal && selectedArticle && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+                <div className="fixed inset-0 backdrop-blur-md bg-opacity-50 flex items-center justify-center p-4 z-50">
                     <div className="bg-white rounded-lg max-w-md w-full p-6 shadow-xl">
                         <div className="flex justify-between items-center mb-4 pb-3 border-b border-gray-200">
                             <h3 className="text-lg font-bold text-gray-900">Decline Reason</h3>
