@@ -3,11 +3,25 @@ import { AuthContext } from '../../../Context/AuthContext/AuthContext';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
-    const { user, signOutUser } = useContext(AuthContext);
+    const { user, signOutUser, loading } = useContext(AuthContext);
     const [showLogoutModal, setShowLogoutModal] = useState(false);
+    console.log(user);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const navigate = useNavigate();
-
+    if (loading) {
+        return (
+            <nav className="navbar bg-white shadow-md sticky top-0 z-50 px-4 md:px-8 py-3">
+                <div className="navbar-start">
+                    <Link to="/" className="text-2xl md:text-3xl font-bold text-gray-800">
+                        read<span className='text-[#c99e66]'>&</span>digest
+                    </Link>
+                </div>
+                <div className="navbar-end">
+                    <div className="animate-pulse bg-gray-200 h-8 w-20 rounded"></div>
+                </div>
+            </nav>
+        );
+    }
     const handleSignOut = () => {
         setShowLogoutModal(false);
         signOutUser()
@@ -62,6 +76,17 @@ const Navbar = () => {
                     Subscription
                 </NavLink>
             </li>
+            <li>
+                <NavLink
+                    to="/dashboard"
+                    className={({ isActive }) =>
+                        isActive ? "text-[#c99e66] font-medium text-base md:text-lg underline underline-offset-4 decoration-2" : "text-gray-700 hover:text-[#c99e66] transition-colors text-base md:text-lg"
+                    }
+                    onClick={closeMenu}
+                >
+                    Dashboard
+                </NavLink>
+            </li>
         </>
     );
 
@@ -102,7 +127,7 @@ const Navbar = () => {
                     </NavLink>
                 </li>
             )}
-            {user?.role === 'admin' && (
+            {/* {user?.role === 'admin' && (
                 <li>
                     <NavLink
                         to="/dashboard"
@@ -114,7 +139,7 @@ const Navbar = () => {
                         Dashboard
                     </NavLink>
                 </li>
-            )}
+            )} */}
         </>
     );
 

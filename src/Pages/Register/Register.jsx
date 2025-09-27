@@ -4,6 +4,7 @@ import SocialLogin from '../../Components/SocialLogin/SocialLogin';
 import { Link, useLocation, useNavigate } from 'react-router';
 import { toast } from 'react-toastify';
 import { AuthContext } from '../../Context/AuthContext/AuthContext';
+import axios from 'axios';
 
 const Register = () => {
     const { createUser, loading, user } = useContext(AuthContext)
@@ -28,7 +29,13 @@ const Register = () => {
             toast.success('Registration successful! Welcome to NewsPortal.');
             reset()
             console.log('Registered user:', result.user);
-
+            const userData = {
+                uid: result.user.uid,
+                name: data.name,
+                email: result.user.email,
+                photoURL: result.user.photoURL || ''
+            };
+            await axios.post(`${import.meta.env.VITE_BASE_URL}/users`, userData)
         } catch (error) {
             toast.error('Registration failed. Please try again.');
             console.log(error);

@@ -3,7 +3,7 @@ import React from 'react';
 const DashBoardHome = () => {
     return (
         <div>
-            dash
+            home dash
         </div>
     );
 };

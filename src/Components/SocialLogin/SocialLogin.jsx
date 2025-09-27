@@ -1,22 +1,34 @@
 import React, { useContext } from 'react';
 import { AuthContext } from '../../Context/AuthContext/AuthContext';
 import { toast } from 'react-toastify';
+import axios from 'axios';
 
 const SocialLogin = () => {
     const { googleSignIn } = useContext(AuthContext);
-
     const handleGoogleLogin = () => {
         googleSignIn()
-            .then(result => {
+            .then(async (result) => {
                 console.log('Google user:', result.user);
-                toast.success(" Google Login successful! Welcome to NewsPortal.")
+                toast.success("Google Login successful! Welcome to NewsPortal.");
+                const userData = {
+                    uid: result.user.uid,
+                    name: result.user.displayName,
+                    email: result.user.email,
+                    photoURL: result.user.photoURL || ''
+                };
+
+                try {
+                    await axios.post(`${import.meta.env.VITE_BASE_URL}/users`, userData);
+                    console.log('Google user saved in MongoDB');
+                } catch (err) {
+                    console.error('Failed to save Google user in MongoDB', err);
+                }
             })
             .catch(error => {
                 console.error(error);
                 toast.error("Google Login Failed");
             });
     };
-
     return (
         <div className="mt-6">
             <div className="relative">

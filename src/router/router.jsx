@@ -9,12 +9,14 @@ import PrivateRoute from "./PrivateRoute/PrivateRoute";
 import AddArticles from "../Pages/AddArticles/AddArticles";
 import MyArticles from "../Pages/MyArticles/MyArticles";
 import MyProfile from "../Pages/MyProfile/MyProfile";
-import AdminRoute from "./AdminRoute/AdminRoute";
 import DashBoardLayout from "../layouts/DashBoardLayout/DashBoardLayout";
-import DashBoardHome from "../Pages/DashBoard/DashBoardHome";
 import ArticleDetails from "../Pages/ArticleDetails/ArticleDetails";
 import MyAddArticlesDetails from "../Pages/MyAddArticlesDetails/MyAddArticlesDetails";
 import EditArticle from "../Pages/EditArticle/EditArticle";
+import AddPublisher from "../Pages/DashBoard/AddPublisher/AddPublisher";
+import DashBoardAllArticles from "../Pages/DashBoard/DashBoardAllArticles/DashBoardAllArticles";
+import AllUsers from "../Pages/DashBoard/AllUsers/AllUsers";
+import DashBoardHome from "../Pages/DashBoard/DashBoardHome/DashBoardHome";
 
 export const router = createBrowserRouter([
     {
@@ -77,20 +79,35 @@ export const router = createBrowserRouter([
                 <MyProfile></MyProfile>
             </PrivateRoute>
         },
-        {
-            path: "/dashboard",
-            element: <AdminRoute>
-                <DashBoardLayout></DashBoardLayout>
-            </AdminRoute>,
-            children: [{
+        ]
+    },
+    {
+        path: "/dashboard",
+        element: <PrivateRoute>
+            <DashBoardLayout></DashBoardLayout>
+        </PrivateRoute>,
+        children: [
+            {
                 index: true,
                 element: <DashBoardHome></DashBoardHome>
-            }]
-        }
+            }, {
+                path: "add-publisher",
+                element: <AddPublisher></AddPublisher>
+            },
+            {
+                path: "all-articles",
+                element: <DashBoardAllArticles></DashBoardAllArticles>
+            },
+            {
+                path: "all-users",
+                element: <AllUsers></AllUsers>
+            }
+
+
 
 
 
         ]
-    },
+    }
 
 ]);

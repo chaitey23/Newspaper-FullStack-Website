@@ -8,6 +8,7 @@ import SocialLogin from '../../Components/SocialLogin/SocialLogin';
 import { Link, useLocation, useNavigate } from 'react-router';
 import { AuthContext } from '../../Context/AuthContext/AuthContext';
 import Lottie from 'lottie-react';
+import axios from 'axios';
 
 const Login = () => {
     const [showPassword, setShowPassword] = useState(false);
@@ -23,23 +24,67 @@ const Login = () => {
             navigate(from, { replace: true });
         }
     }, [loading, user, from, navigate]);
+    // const onSubmit = async (data) => {
+    //     try {
+    //         const result = await signInUser(data.email, data.password)
+    //         toast.success('Login successful! Welcome back to NewsPortal.');
+    //         reset()
+    //         // 
+    //         console.log("login User", result.user);
+    //         const userData = {
+    //             uid: result.user.uid,
+    //             name: result.user.displayName,
+    //             email: result.user.email,
+    //             photoURL: result.user.photoURL``
+    //         }
+    //         await axios.post(`${import.meta.env.VITE_BASE_URL}/users`, userData)
+
+    //     } catch (error) {
+    //         toast.error('Login failed. Please check your credentials.');
+    //         console.log(error);
+
+    //     }
+    // };
+    // Login.jsx - onSubmit function এ change করুন
     const onSubmit = async (data) => {
         try {
-            const result = await signInUser(data.email, data.password)
+            const result = await signInUser(data.email, data.password);
+
+            // User data server-e save করুন
+            const userData = {
+                uid: result.user.uid,
+                name: result.user.displayName || data.email.split('@')[0], // name না থাকলে email থেকে নিন
+                email: result.user.email,
+                photoURL: result.user.photoURL || ''
+            };
+
+            // Server-e user save করুন
+            await axios.post(`${import.meta.env.VITE_BASE_URL}/users`, userData);
 
             toast.success('Login successful! Welcome back to NewsPortal.');
-            reset()
-            // navigate(from, { replace: true })
-            console.log("login User", result.user);
+            reset();
 
+            // Admin check করার জন্য server থেকে user data নিন
+            try {
+                const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/users?email=${data.email}`);
+                const loggedInUser = res.data;
+
+                if (loggedInUser.role === "admin") {
+                    navigate("/dashboard", { replace: true });
+                } else {
+                    navigate(from, { replace: true });
+                }
+            } catch (error) {
+                console.error('Error checking user role:', error);
+                // যদি role check fail হয়, সাধারণ user হিসেবে redirect করুন
+                navigate(from, { replace: true });
+            }
 
         } catch (error) {
             toast.error('Login failed. Please check your credentials.');
             console.log(error);
-
         }
     };
-
     return (
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 py-12 px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 lg:grid-cols-2 max-w-6xl bg-white shadow-xl rounded-3xl overflow-hidden">
