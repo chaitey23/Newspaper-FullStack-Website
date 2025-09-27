@@ -1,14 +1,3 @@
-// import React from 'react';
-
-// const AddPublisher = () => {
-//     return (
-//         <div>
-//             <h1>user user</h1>
-//         </div>
-//     );
-// };
-
-// export default AddPublisher;
 import React, { useState } from "react";
 import { toast } from "react-hot-toast";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
@@ -111,7 +100,7 @@ const AddPublisher = () => {
                 toast.success("Publisher added successfully!");
                 setName("");
                 setPreviewImage("");
-                fileInput.value = ""; // Clear file input
+                fileInput.value = "";
             }
         } catch (error) {
             console.error('Add publisher error:', error);
@@ -214,7 +203,7 @@ const AddPublisher = () => {
                     <button
                         type="submit"
                         disabled={loading || imageUploading}
-                        className="w-full bg-gradient-to-r from-[#c99e66] to-amber-600 text-white py-3 rounded-lg font-medium hover:shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="w-full bg-gradient-to-r from-[#c99e66] to-amber-600 text-white py-3 rounded-lg font-medium hover:shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                     >
                         {loading ? (
                             <span className="flex items-center justify-center gap-2">

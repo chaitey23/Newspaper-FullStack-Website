@@ -32,7 +32,7 @@ const AddArticles = () => {
 
     // Convert publishers to options for react-select
     const publisherOptions = publishers.map(publisher => ({
-        value: publisher._id,
+        value: publisher.name,
         label: publisher.name
     }));
 
@@ -47,29 +47,37 @@ const AddArticles = () => {
         { value: 'education', label: 'Education' }
     ];
 
-    // ImgBB upload
+    // ImgBB upload function
     const uploadImageToImgBB = async (imageFile) => {
         const formData = new FormData();
         formData.append('image', imageFile);
-        try {
-            const res = await fetch(`https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_IMGBB_API_KEY}`, {
-                method: 'POST',
-                body: formData
-            });
-            const data = await res.json();
-            if (data.success) return data.data.url;
-            throw new Error('Image upload failed');
-        } catch (error) {
-            throw new Error(error.message);
+
+        const res = await fetch(`https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_IMGBB_API_KEY}`, {
+            method: 'POST',
+            body: formData
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+            return data.data.url;
         }
+        throw new Error('Image upload failed');
     };
 
     const handleImageChange = async (e) => {
         const file = e.target.files[0];
         if (!file) return;
 
-        if (!file.type.startsWith('image/')) return toast.error('Please select a valid image file');
-        if (file.size > 5 * 1024 * 1024) return toast.error('Image size should be less than 5MB');
+        // Check if file is an image
+        if (!file.type.startsWith('image/')) {
+            return toast.error('Please select a valid image file');
+        }
+
+        // Check file size (max 5MB)
+        if (file.size > 5 * 1024 * 1024) {
+            return toast.error('Image size should be less than 5MB');
+        }
 
         setImageUploading(true);
         try {
@@ -77,7 +85,9 @@ const AddArticles = () => {
             setFormData(prev => ({ ...prev, image: imageUrl }));
             toast.success('Image uploaded successfully!');
         } catch (error) {
-            toast.error(error.message);
+            console.log(error);
+
+            toast.error('Failed to upload image');
         } finally {
             setImageUploading(false);
         }
@@ -112,8 +122,8 @@ const AddArticles = () => {
             if (res.status === 201) {
                 toast.success('Article submitted successfully!', { duration: 3000 });
 
+                // Reset form
                 setFormData({ title: '', image: '', publisher: '', tags: [], description: '' });
-
                 const fileInput = document.getElementById('image');
                 if (fileInput) fileInput.value = '';
 
@@ -138,19 +148,40 @@ const AddArticles = () => {
                     <form onSubmit={handleSubmit} className="space-y-7">
                         <div>
                             <label htmlFor="title" className="block text-sm font-semibold text-gray-700 mb-2">Article Title *</label>
-                            <input type="text" id="title" name="title" value={formData.title} onChange={handleInputChange}
-                                placeholder="Enter article title" className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#c99e66] focus:border-[#c99e66] transition duration-200" />
+                            <input
+                                type="text"
+                                id="title"
+                                name="title"
+                                value={formData.title}
+                                onChange={handleInputChange}
+                                placeholder="Enter article title"
+                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#c99e66] focus:border-[#c99e66] transition duration-200"
+                            />
                         </div>
 
                         <div className="relative">
                             <label htmlFor="image" className="block text-sm font-semibold text-gray-700 mb-2">Featured Image *</label>
-                            <input type="file" id="image" accept="image/*" onChange={handleImageChange}
-                                className="w-full px-4 py-3 border border-gray-300 rounded-lg file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#f8f5f1] file:text-[#c99e66] hover:file:bg-[#eee2d1] cursor-pointer" />
+                            <input
+                                type="file"
+                                id="image"
+                                accept="image/*"
+                                onChange={handleImageChange}
+                                className="w-full px-4 py-3 border border-gray-300 rounded-lg file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#f8f5f1] file:text-[#c99e66] hover:file:bg-[#eee2d1] cursor-pointer"
+                            />
                             {imageUploading && <p className="mt-2 text-[#c99e66] text-sm font-medium animate-pulse">Uploading image...</p>}
                             {formData.image && !imageUploading && (
                                 <div className="relative mt-4 inline-block">
-                                    <button type="button" onClick={() => { setFormData(prev => ({ ...prev, image: '' })); document.getElementById('image').value = ''; }}
-                                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center shadow hover:bg-red-600 transition-colors" title="Remove image">✕</button>
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setFormData(prev => ({ ...prev, image: '' }));
+                                            document.getElementById('image').value = '';
+                                        }}
+                                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center shadow hover:bg-red-600 transition-colors"
+                                        title="Remove image"
+                                    >
+                                        ✕
+                                    </button>
                                     <img src={formData.image} alt="Preview" className="mx-auto max-w-xs max-h-40 rounded-lg border-2 border-[#c99e66]/40 shadow-sm" />
                                 </div>
                             )}
@@ -172,16 +203,38 @@ const AddArticles = () => {
 
                         <div>
                             <label htmlFor="tags" className="block text-sm font-semibold text-gray-700 mb-2">Tags *</label>
-                            <Select id="tags" options={tagOptions} isMulti value={tagOptions.filter(opt => formData.tags.includes(opt.value))} onChange={handleTagsChange} placeholder="Select tags" classNamePrefix="react-select" />
+                            <Select
+                                id="tags"
+                                options={tagOptions}
+                                isMulti
+                                value={tagOptions.filter(opt => formData.tags.includes(opt.value))}
+                                onChange={handleTagsChange}
+                                placeholder="Select tags"
+                                classNamePrefix="react-select"
+                            />
                         </div>
 
                         <div>
                             <label htmlFor="description" className="block text-sm font-semibold text-gray-700 mb-2">Article Description *</label>
-                            <textarea id="description" name="description" value={formData.description} onChange={handleInputChange} placeholder="Write your article content here..." rows="6" className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#c99e66] focus:border-[#c99e66] transition duration-200 resize-vertical" />
+                            <textarea
+                                id="description"
+                                name="description"
+                                value={formData.description}
+                                onChange={handleInputChange}
+                                placeholder="Write your article content here..."
+                                rows="6"
+                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#c99e66] focus:border-[#c99e66] transition duration-200 resize-vertical"
+                            />
                         </div>
 
-                        <button type="submit" disabled={loading || imageUploading || !formData.title || !formData.image || !formData.publisher || formData.tags.length === 0 || !formData.description}
-                            className={`w-full bg-[#c99e66] text-white py-3 px-4 rounded-lg font-semibold shadow-md ${loading || imageUploading || !formData.title || !formData.image || !formData.publisher || formData.tags.length === 0 || !formData.description ? 'cursor-not-allowed bg-[#c99e66]/60' : 'hover:bg-[#b3864f] cursor-pointer'} transition-all duration-200`}>
+                        <button
+                            type="submit"
+                            disabled={loading || imageUploading || !formData.title || !formData.image || !formData.publisher || formData.tags.length === 0 || !formData.description}
+                            className={`w-full bg-[#c99e66] text-white py-3 px-4 rounded-lg font-semibold shadow-md ${loading || imageUploading || !formData.title || !formData.image || !formData.publisher || formData.tags.length === 0 || !formData.description
+                                ? 'cursor-not-allowed bg-[#c99e66]/60'
+                                : 'hover:bg-[#b3864f] cursor-pointer'
+                                } transition-all duration-200`}
+                        >
                             {loading ? 'Submitting...' : 'Submit Article'}
                         </button>
                     </form>

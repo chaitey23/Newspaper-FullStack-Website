@@ -2,7 +2,7 @@ import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import Swal from "sweetalert2";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
-import { FaUsers, FaUserShield, FaUser, FaCrown, FaStar, FaEnvelope, FaExclamationTriangle, FaSpinner, FaTrash, FaEdit } from "react-icons/fa";
+import { FaUsers, FaUserShield, FaUser, FaCrown, FaStar, FaEnvelope, FaExclamationTriangle, FaSpinner, FaTrash, FaEdit, FaImage } from "react-icons/fa";
 
 const AllUsers = () => {
     const axiosSecure = useAxiosSecure();
@@ -250,8 +250,8 @@ const AllUsers = () => {
                                     </th>
                                     <th className="py-4 px-6 text-left">
                                         <span className="text-slate-600 text-sm font-medium flex items-center gap-2">
-                                            <FaEnvelope className="text-slate-400" />
-                                            Email Address
+                                            <FaUser className="text-slate-400" />
+                                            User Info
                                         </span>
                                     </th>
                                     <th className="py-4 px-6 text-left">
@@ -273,14 +273,35 @@ const AllUsers = () => {
                                         </td>
                                         <td className="py-4 px-6">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 bg-gradient-to-br from-slate-100 to-slate-200 rounded-xl flex items-center justify-center shadow-inner">
-                                                    <span className="text-slate-700 font-semibold text-sm">
-                                                        {user.email.charAt(0).toUpperCase()}
-                                                    </span>
+                                                {/* User Avatar with Image */}
+                                                <div className="relative">
+                                                    {user.photoURL ? (
+                                                        <img
+                                                            src={user.photoURL}
+                                                            alt={user.name || user.email}
+                                                            className="w-12 h-12 rounded-xl object-cover border-2 border-slate-200 shadow-inner"
+                                                        />
+                                                    ) : (
+                                                        <div className="w-12 h-12 bg-gradient-to-br from-slate-100 to-slate-200 rounded-xl flex items-center justify-center shadow-inner">
+                                                            <span className="text-slate-700 font-semibold text-lg">
+                                                                {user.name ? user.name.charAt(0).toUpperCase() : user.email.charAt(0).toUpperCase()}
+                                                            </span>
+                                                        </div>
+                                                    )}
+                                                    {/* Online Status Indicator */}
+                                                    <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
                                                 </div>
                                                 <div>
-                                                    <p className="text-slate-800 font-medium text-sm">{user.email}</p>
-                                                    <p className="text-slate-400 text-xs">Active member</p>
+                                                    <p className="text-slate-800 font-medium text-sm">
+                                                        {user.name || 'No Name'}
+                                                    </p>
+                                                    <p className="text-slate-400 text-xs flex items-center gap-1">
+                                                        <FaEnvelope className="text-slate-300" />
+                                                        {user.email}
+                                                    </p>
+                                                    <p className="text-slate-500 text-xs mt-1">
+                                                        Joined: {new Date(user.createdAt).toLocaleDateString()}
+                                                    </p>
                                                 </div>
                                             </div>
                                         </td>
