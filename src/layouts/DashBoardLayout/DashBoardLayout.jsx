@@ -163,7 +163,9 @@ const DashBoardLayout = () => {
                                 </div>
                             </div>
                         </header>
-                        <Navbar></Navbar>
+                        <div className='hidden lg:block'>
+                            <Navbar></Navbar>
+                        </div>
                         {/* Page Content */}
                         <main className="flex-1 p-4 lg:p-6">
                             <Outlet />
