@@ -17,6 +17,7 @@ import AddPublisher from "../Pages/DashBoard/AddPublisher/AddPublisher";
 import DashBoardAllArticles from "../Pages/DashBoard/DashBoardAllArticles/DashBoardAllArticles";
 import AllUsers from "../Pages/DashBoard/AllUsers/AllUsers";
 import DashBoardHome from "../Pages/DashBoard/DashBoardHome/DashBoardHome";
+import AdminRoute from "./AdminRoute/AdminRoute";
 
 export const router = createBrowserRouter([
     {
@@ -83,24 +84,32 @@ export const router = createBrowserRouter([
     },
     {
         path: "/dashboard",
-        element: <PrivateRoute>
+        element: <AdminRoute>
             <DashBoardLayout></DashBoardLayout>
-        </PrivateRoute>,
+        </AdminRoute>,
         children: [
             {
                 index: true,
-                element: <DashBoardHome></DashBoardHome>
+                element: <AdminRoute>
+                    <DashBoardHome></DashBoardHome>
+                </AdminRoute>
             }, {
                 path: "add-publisher",
-                element: <AddPublisher></AddPublisher>
+                element: <AdminRoute>
+                    <AddPublisher></AddPublisher>
+                </AdminRoute>
             },
             {
                 path: "all-articles",
-                element: <DashBoardAllArticles></DashBoardAllArticles>
+                element: <AdminRoute>
+                    <DashBoardAllArticles></DashBoardAllArticles>
+                </AdminRoute>
             },
             {
                 path: "all-users",
-                element: <AllUsers></AllUsers>
+                element: <AdminRoute>
+                    <AllUsers></AllUsers>
+                </AdminRoute>
             }
 
 

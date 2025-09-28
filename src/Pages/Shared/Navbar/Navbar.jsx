@@ -5,7 +5,8 @@ import { Link, NavLink, useNavigate } from 'react-router-dom';
 const Navbar = () => {
     const { user, signOutUser, loading } = useContext(AuthContext);
     const [showLogoutModal, setShowLogoutModal] = useState(false);
-    console.log(user);
+    console.log("User object:", user);
+
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const navigate = useNavigate();
     if (loading) {
@@ -76,17 +77,6 @@ const Navbar = () => {
                     Subscription
                 </NavLink>
             </li>
-            <li>
-                <NavLink
-                    to="/dashboard"
-                    className={({ isActive }) =>
-                        isActive ? "text-[#c99e66] font-medium text-base md:text-lg underline underline-offset-4 decoration-2" : "text-gray-700 hover:text-[#c99e66] transition-colors text-base md:text-lg"
-                    }
-                    onClick={closeMenu}
-                >
-                    Dashboard
-                </NavLink>
-            </li>
         </>
     );
 
@@ -127,7 +117,7 @@ const Navbar = () => {
                     </NavLink>
                 </li>
             )}
-            {/* {user?.role === 'admin' && (
+            {user?.role === 'admin' && (
                 <li>
                     <NavLink
                         to="/dashboard"
@@ -139,7 +129,7 @@ const Navbar = () => {
                         Dashboard
                     </NavLink>
                 </li>
-            )} */}
+            )}
         </>
     );
 

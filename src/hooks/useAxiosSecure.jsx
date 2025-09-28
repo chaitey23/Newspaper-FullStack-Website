@@ -5,28 +5,27 @@ import { AuthContext } from '../Context/AuthContext/AuthContext';
 const axiosInstance = axios.create({
     baseURL: import.meta.env.VITE_BASE_URL
 });
-
 const useAxiosSecure = () => {
     const { user } = useContext(AuthContext);
 
     useEffect(() => {
-
         const requestInterceptor = axiosInstance.interceptors.request.use(config => {
             if (user?.accessToken) {
-                config.headers.authorization = `Bearer ${user.accessToken}`;
+                config.headers.Authorization = `Bearer ${user.accessToken}`;
             }
             return config;
-        }, error => Promise.reject(error));
+        });
 
         const responseInterceptor = axiosInstance.interceptors.response.use(
-            response => response,
-            error => {
-                if (error.response && error.response.status === 401) {
-                    console.log("Unauthorized! Token may have expired.");
+            res => res,
+            err => {
+                if (err.response?.status === 401) {
+                    console.log("Unauthorized! Token expired or missing.");
                 }
-                return Promise.reject(error);
+                return Promise.reject(err);
             }
         );
+
         return () => {
             axiosInstance.interceptors.request.eject(requestInterceptor);
             axiosInstance.interceptors.response.eject(responseInterceptor);
@@ -35,5 +34,6 @@ const useAxiosSecure = () => {
 
     return axiosInstance;
 };
+
 
 export default useAxiosSecure;

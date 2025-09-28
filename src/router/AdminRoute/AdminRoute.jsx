@@ -1,13 +1,32 @@
-// import React, { useContext } from 'react';
+// import React, { useContext, useEffect, useState } from 'react';
 // import { Navigate, useLocation } from 'react-router';
 // import { AuthContext } from '../../Context/AuthContext/AuthContext';
-
+// import axios from 'axios';
 
 // const AdminRoute = ({ children }) => {
 //     const { user, loading } = useContext(AuthContext);
 //     const location = useLocation();
+//     const [userRole, setUserRole] = useState(null);
+//     const [checkingRole, setCheckingRole] = useState(true);
 
-//     if (loading) {
+//     useEffect(() => {
+//         const checkUserRole = async () => {
+//             if (user && user.email) {
+//                 try {
+//                     const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/users?email=${user.email}`);
+//                     setUserRole(res.data.role);
+//                 } catch (error) {
+//                     console.error('Error checking user role:', error);
+//                     setUserRole('user');
+//                 }
+//             }
+//             setCheckingRole(false);
+//         };
+
+//         checkUserRole();
+//     }, [user]);
+
+//     if (loading || checkingRole) {
 //         return (
 //             <div className="flex justify-center items-center min-h-[60vh]">
 //                 <div className="w-12 h-12 border-4 border-[#c99e66] border-t-transparent rounded-full animate-spin"></div>
@@ -15,7 +34,7 @@
 //         );
 //     }
 
-//     if (!user || user.role !== 'admin') {
+//     if (!user || userRole !== 'admin') {
 //         return <Navigate to="/" state={{ from: location }} replace />;
 //     }
 
@@ -24,33 +43,40 @@
 
 // export default AdminRoute;
 // AdminRoute.jsx
-import React, { useContext, useEffect, useState } from 'react';
-import { Navigate, useLocation } from 'react-router';
+import { useContext, useEffect, useState } from 'react';
+import { Navigate, useLocation } from 'react-router-dom';
 import { AuthContext } from '../../Context/AuthContext/AuthContext';
-import axios from 'axios';
+import useAxiosSecure from '../../hooks/useAxiosSecure';
+
 
 const AdminRoute = ({ children }) => {
     const { user, loading } = useContext(AuthContext);
     const location = useLocation();
+    const axiosSecure = useAxiosSecure();
+
     const [userRole, setUserRole] = useState(null);
     const [checkingRole, setCheckingRole] = useState(true);
 
     useEffect(() => {
-        const checkUserRole = async () => {
-            if (user && user.email) {
-                try {
-                    const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/users?email=${user.email}`);
-                    setUserRole(res.data.role);
-                } catch (error) {
-                    console.error('Error checking user role:', error);
-                    setUserRole('user');
-                }
+        const fetchUserRole = async () => {
+            if (!user?.email) {
+                setCheckingRole(false);
+                return;
             }
-            setCheckingRole(false);
+
+            try {
+                const res = await axiosSecure.get(`/users?email=${user.email}`);
+                setUserRole(res.data.role);
+            } catch (err) {
+                console.error("Error fetching user role:", err);
+                setUserRole('user'); // fallback
+            } finally {
+                setCheckingRole(false);
+            }
         };
 
-        checkUserRole();
-    }, [user]);
+        fetchUserRole();
+    }, [user, axiosSecure]);
 
     if (loading || checkingRole) {
         return (

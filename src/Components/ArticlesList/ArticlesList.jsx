@@ -1,242 +1,11 @@
-// import React, { useContext, useState, } from 'react';
-// import { AuthContext } from '../../Context/AuthContext/AuthContext';
-// import { useArticles } from '../../hooks/useArticles';
-// import { usePublishers } from '../../hooks/usePublishers';
-// import { useTags } from '../../hooks/useTags';
-// import { Link } from 'react-router';
-// import { QueryClient } from '@tanstack/react-query';
-
-
-// const ArticlesList = () => {
-//     const [selectedPublisher, setSelectedPublisher] = useState('');
-//     const [selectedTags, setSelectedTags] = useState([]);
-//     const [searchTerm, setSearchTerm] = useState('');
-
-//     const { user } = useContext(AuthContext);
-
-//     // Build filters object
-//     const filters = {
-//         search: searchTerm,
-//         publisher: selectedPublisher,
-//         tags: selectedTags
-
-//     };
-
-//     // Use TanStack Query hooks
-//     const {
-//         data: articles = [],
-//         isLoading: articlesLoading,
-//         error: articlesError
-//     } = useArticles(filters);
-
-//     const {
-//         data: publishers = [],
-//         isLoading: publishersLoading
-//     } = usePublishers();
-
-//     const {
-//         data: tags = [],
-//         isLoading: tagsLoading
-//     } = useTags();
-
-//     const handleTagToggle = (tag) => {
-//         if (selectedTags.includes(tag)) {
-//             setSelectedTags(selectedTags.filter(t => t !== tag));
-//         } else {
-//             setSelectedTags([...selectedTags, tag]);
-//         }
-//     };
-
-//     const clearFilters = () => {
-//         setSelectedPublisher('');
-//         setSelectedTags([]);
-//         setSearchTerm('');
-//     };
-
-//     // Combined loading state
-//     const isLoading = articlesLoading || publishersLoading || tagsLoading;
-//     const error = articlesError;
-
-//     if (isLoading) {
-//         return (
-//             <div className="text-center py-12">
-//                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#c99e66] mx-auto"></div>
-//                 <p className="mt-4 text-gray-600">Loading articles...</p>
-//             </div>
-//         );
-//     }
-
-//     if (error) {
-//         return (
-//             <div className="text-center py-12 text-red-600">
-//                 <p>Error loading articles. Please try again later.</p>
-//                 <p className="text-sm mt-2">{error.message}</p>
-//             </div>
-//         );
-//     }
-
-//     return (
-//         <div className="container mx-auto px-4 py-8">
-//             {/* Search and Filter Section */}
-//             <div className="bg-white p-6 rounded-lg shadow-md mb-8">
-//                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-//                     {/* Search Input */}
-//                     <div>
-//                         <label className="block text-sm font-medium text-gray-700 mb-2">Search by Title</label>
-//                         <input
-//                             type="text"
-//                             placeholder="Search articles..."
-//                             value={searchTerm}
-//                             onChange={(e) => setSearchTerm(e.target.value)}
-//                             className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
-//                         />
-//                     </div>
-
-//                     {/* Publisher Filter */}
-//                     <div>
-//                         <label className="block text-sm font-medium text-gray-700 mb-2">Filter by Publisher</label>
-//                         <select
-//                             value={selectedPublisher}
-//                             onChange={(e) => setSelectedPublisher(e.target.value)}
-//                             className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
-//                             disabled={publishersLoading}
-//                         >
-//                             <option value="">All Publishers</option>
-//                             {publishers.map((publisher, index) => (
-//                                 <option key={index} value={publisher}>{publisher}</option>
-//                             ))}
-//                         </select>
-//                     </div>
-
-//                     {/* Clear Filters Button */}
-//                     <div className="flex items-end">
-//                         <button
-//                             onClick={clearFilters}
-//                             className="w-full bg-[#c99e66] text-white py-3 px-4 rounded-md hover:bg-[#c99e66] transition-colors cursor-pointer"
-//                         >
-//                             Clear Filters
-//                         </button>
-//                     </div>
-//                 </div>
-
-//                 {/* Tags Filter */}
-//                 <div className="mt-6">
-//                     <label className="block text-sm font-medium text-gray-700 mb-2">Filter by Tags</label>
-//                     <div className="flex flex-wrap gap-2">
-//                         {tagsLoading ? (
-//                             <div className="flex space-x-2">
-//                                 {[...Array(5)].map((_, i) => (
-//                                     <div key={i} className="h-6 w-16 bg-gray-200 rounded-full animate-pulse"></div>
-//                                 ))}
-//                             </div>
-//                         ) : (
-//                             tags.map((tag, index) => (
-//                                 <button
-//                                     key={index}
-//                                     onClick={() => handleTagToggle(tag)}
-//                                     className={`px-3 py-1 rounded-full text-sm transition-colors ${selectedTags.includes(tag)
-//                                         ? 'bg-[#c99e66] text-white'
-//                                         : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-//                                         }`}
-//                                 >
-//                                     {tag}
-//                                 </button>
-//                             ))
-//                         )}
-//                     </div>
-//                 </div>
-//             </div>
-
-//             {/* Articles Grid */}
-//             {articles.length === 0 ? (
-//                 <div className="text-center py-12">
-//                     <p className="text-gray-600">No articles found matching your criteria.</p>
-//                     <p className="text-sm text-gray-500 mt-2">Try adjusting your filters or search term.</p>
-//                 </div>
-//             ) : (
-//                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-//                     {articles.map(article => (
-//                         <div
-//                             key={article._id}
-//                             className={`bg-white rounded-lg shadow-md overflow-hidden transition-transform hover:scale-105 relative ${article.isPremium
-//                                 ? 'border-2 border-orange-500 bg-gradient-to-br from-amber-50 to-white'
-//                                 : 'border border-gray-200'
-//                                 }`}
-//                         >
-//                             {/* Premium ribbon for premium articles */}
-//                             {article.isPremium && (
-//                                 <div className="absolute top-0 right-0 w-16 h-16 overflow-hidden">
-//                                     <div className="absolute transform rotate-45 bg-orange-500 text-white text-xs py-1 w-24 top-4 -right-8 flex items-center justify-center">
-//                                         Premium
-//                                     </div>
-//                                 </div>
-//                             )}
-
-//                             <img
-//                                 src={article.image}
-//                                 alt={article.title}
-//                                 className="w-full h-48 object-cover"
-//                             />
-//                             <div className="p-4">
-//                                 <h3 className="text-xl font-semibold mb-2 text-gray-800">{article.title}</h3>
-//                                 <p className="text-gray-600 mb-4">
-//                                     {article.description.length > 100
-//                                         ? `${article.description.substring(0, 100)}...`
-//                                         : article.description
-//                                     }
-//                                 </p>
-
-//                                 <div className="flex justify-between items-center mb-4">
-//                                     <span className="text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded">
-//                                         {article.publisher}
-//                                     </span>
-//                                     {article.isPremium && (
-//                                         <span className="text-sm bg-orange-500 text-white px-2 py-1 rounded flex items-center">
-//                                             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
-//                                                 <path fillRule="evenodd" d="M5 2a1 1 0 011 1v1h1a1 1 0 010 2H6v1a1 1 0 01-2 0V6H3a1 1 0 010-2h1V3a1 1 0 011-1zm0 10a1 1 0 011 1v1h1a1 1 0 110 2H6v1a1 1 0 11-2 0v-1H3a1 1 0 110-2h1v-1a1 1 0 011-1zM12 2a1 1 0 01.967.744L14.146 7.2 17.5 9.134a1 1 0 010 1.732l-3.354 1.935-1.18 4.455a1 1 0 01-1.933 0L9.854 12.2 6.5 10.266a1 1 0 010-1.732l3.354-1.935 1.18-4.455A1 1 0 0112 2z" clipRule="evenodd" />
-//                                             </svg>
-//                                             Premium
-//                                         </span>
-//                                     )}
-//                                 </div>
-
-//                                 <div className="flex justify-between items-center">
-//                                     <span className="text-sm text-gray-500">{article.views} views</span>
-//                                     <Link
-//                                         to={`/article/${article._id}`}
-//                                         className={`px-4 py-2 rounded text-white transition-colors ${article.isPremium && !user?.premiumTaken
-//                                             ? 'bg-gray-400 cursor-not-allowed'
-//                                             : 'bg-[#c99e66] hover:bg-[#c99e66]'
-//                                             }`}
-//                                         onClick={() => {
-//                                             if (article.isPremium && !user?.premiumTaken) {
-//                                                 alert('Premium subscription required');
-//                                             } else {
-//                                                 QueryClient.invalidateQueries({ queryKey: ['articles'] });
-
-//                                             }
-//                                         }}
-//                                     >
-//                                         Read Details
-//                                     </Link>
-//                                 </div>
-//                             </div>
-//                         </div>
-//                     ))}
-//                 </div>
-//             )}
-//         </div>
-//     );
-// };
-
-// export default ArticlesList;
 import React, { useContext, useState } from 'react';
 import { AuthContext } from '../../Context/AuthContext/AuthContext';
 import { useArticles } from '../../hooks/useArticles';
 import { usePublishers } from '../../hooks/usePublishers';
 import { useTags } from '../../hooks/useTags';
 import { useQueryClient } from '@tanstack/react-query';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const ArticlesList = () => {
     const [selectedPublisher, setSelectedPublisher] = useState('');
@@ -244,16 +13,14 @@ const ArticlesList = () => {
     const [searchTerm, setSearchTerm] = useState('');
 
     const { user } = useContext(AuthContext);
-    const queryClient = useQueryClient(); // ✅ useQueryClient hook ব্যবহার করুন
+    const queryClient = useQueryClient();
 
-    // Build filters object
     const filters = {
         search: searchTerm,
         publisher: selectedPublisher,
         tags: selectedTags
     };
 
-    // Use TanStack Query hooks
     const {
         data: articles = [],
         isLoading: articlesLoading,
@@ -284,181 +51,362 @@ const ArticlesList = () => {
         setSearchTerm('');
     };
 
-    // Combined loading state
     const isLoading = articlesLoading || publishersLoading || tagsLoading;
     const error = articlesError;
 
+    // Animation variants
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.1
+            }
+        }
+    };
+
+    const itemVariants = {
+        hidden: { y: 20, opacity: 0 },
+        visible: {
+            y: 0,
+            opacity: 1,
+            transition: {
+                duration: 0.5,
+                ease: "easeOut"
+            }
+        }
+    };
+
+    const filterVariants = {
+        hidden: { opacity: 0, x: -20 },
+        visible: {
+            opacity: 1,
+            x: 0,
+            transition: {
+                duration: 0.4
+            }
+        }
+    };
+
     if (isLoading) {
         return (
-            <div className="text-center py-12">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#c99e66] mx-auto"></div>
-                <p className="mt-4 text-gray-600">Loading articles...</p>
+            <div className="min-h-screen bg-gradient-to-br from-gray-50 to-[#faf6f0] py-8">
+                <div className="container mx-auto px-4">
+                    {/* Loading Header */}
+                    <motion.div
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="text-center mb-12"
+                    >
+                        <div className="h-8 bg-gray-300 rounded w-1/4 mx-auto mb-4 animate-pulse"></div>
+                        <div className="h-4 bg-gray-300 rounded w-1/2 mx-auto animate-pulse"></div>
+                    </motion.div>
+
+                    {/* Loading Filters */}
+                    <div className="bg-white p-6 rounded-2xl shadow-lg mb-8">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            {[...Array(3)].map((_, i) => (
+                                <div key={i}>
+                                    <div className="h-4 bg-gray-300 rounded w-1/3 mb-2 animate-pulse"></div>
+                                    <div className="h-12 bg-gray-200 rounded animate-pulse"></div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Loading Articles Grid */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {[...Array(6)].map((_, i) => (
+                            <motion.div
+                                key={i}
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: i * 0.1 }}
+                                className="bg-white rounded-2xl shadow-lg overflow-hidden"
+                            >
+                                <div className="h-48 bg-gray-300 animate-pulse"></div>
+                                <div className="p-6">
+                                    <div className="h-6 bg-gray-300 rounded mb-3 animate-pulse"></div>
+                                    <div className="h-4 bg-gray-300 rounded mb-2 animate-pulse"></div>
+                                    <div className="h-4 bg-gray-300 rounded w-2/3 animate-pulse"></div>
+                                    <div className="flex justify-between items-center mt-4">
+                                        <div className="h-4 bg-gray-300 rounded w-1/4 animate-pulse"></div>
+                                        <div className="h-8 bg-gray-300 rounded w-1/3 animate-pulse"></div>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        ))}
+                    </div>
+                </div>
             </div>
         );
     }
 
     if (error) {
         return (
-            <div className="text-center py-12 text-red-600">
-                <p>Error loading articles. Please try again later.</p>
-                <p className="text-sm mt-2">{error.message}</p>
-            </div>
+            <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-[#faf6f0]"
+            >
+                <div className="text-center p-8 bg-white rounded-2xl shadow-lg max-w-md">
+                    <div className="text-red-500 text-6xl mb-4">⚠️</div>
+                    <h3 className="text-xl font-bold text-gray-800 mb-2">Error Loading Articles</h3>
+                    <p className="text-gray-600 mb-4">Please try again later</p>
+                    <p className="text-sm text-gray-500">{error.message}</p>
+                </div>
+            </motion.div>
         );
     }
 
     return (
-        <div className="container mx-auto px-4 py-8">
-            {/* Search and Filter Section */}
-            <div className="bg-white p-6 rounded-lg shadow-md mb-8">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    {/* Search Input */}
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Search by Title</label>
-                        <input
-                            type="text"
-                            placeholder="Search articles..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
-                        />
-                    </div>
+        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-[#faf6f0] py-8">
+            <div className="container mx-auto px-4">
+                {/* Header Section */}
+                <motion.div
+                    initial={{ opacity: 0, y: -30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6 }}
+                    className="text-center mb-12"
+                >
+                    <h1 className="text-4xl md:text-5xl font-bold text-gray-800 mb-4">
+                        Discover Articles
+                    </h1>
+                    <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                        Explore our collection of curated articles from trusted publishers
+                    </p>
+                    <div className="w-24 h-1 bg-gradient-to-r from-[#c99e66] to-[#b08d5a] mx-auto mt-6 rounded-full"></div>
+                </motion.div>
 
-                    {/* Publisher Filter */}
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Filter by Publisher</label>
-                        <select
-                            value={selectedPublisher}
-                            onChange={(e) => setSelectedPublisher(e.target.value)}
-                            className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
-                            disabled={publishersLoading}
-                        >
-                            <option value="">All Publishers</option>
-                            {publishers.map((publisher) => (
-                                <option key={publisher._id} value={publisher.name}>
-                                    {publisher.name}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
+                {/* Search and Filter Section */}
+                <motion.div
+                    variants={filterVariants}
+                    initial="hidden"
+                    animate="visible"
+                    className="bg-white p-6 rounded-2xl shadow-lg mb-8 border border-gray-100"
+                >
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        {/* Search Input */}
+                        <motion.div variants={filterVariants}>
+                            <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                🔍 Search by Title
+                            </label>
+                            <input
+                                type="text"
+                                placeholder="What are you looking for?"
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                className="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#c99e66] focus:border-[#c99e66] transition-all duration-300"
+                            />
+                        </motion.div>
 
-                    {/* Clear Filters Button */}
-                    <div className="flex items-end">
-                        <button
-                            onClick={clearFilters}
-                            className="w-full bg-[#c99e66] text-white py-3 px-4 rounded-md hover:bg-amber-700 transition-colors cursor-pointer"
-                        >
-                            Clear Filters
-                        </button>
-                    </div>
-                </div>
-
-                {/* Tags Filter */}
-                <div className="mt-6">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Filter by Tags</label>
-                    <div className="flex flex-wrap gap-2">
-                        {tagsLoading ? (
-                            <div className="flex space-x-2">
-                                {[...Array(5)].map((_, i) => (
-                                    <div key={i} className="h-6 w-16 bg-gray-200 rounded-full animate-pulse"></div>
+                        {/* Publisher Filter */}
+                        <motion.div variants={filterVariants}>
+                            <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                📰 Filter by Publisher
+                            </label>
+                            <select
+                                value={selectedPublisher}
+                                onChange={(e) => setSelectedPublisher(e.target.value)}
+                                className="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#c99e66] focus:border-[#c99e66] transition-all duration-300 cursor-pointer"
+                                disabled={publishersLoading}
+                            >
+                                <option value="">All Publishers</option>
+                                {publishers.map((publisher) => (
+                                    <option key={publisher._id} value={publisher.name}>
+                                        {publisher.name}
+                                    </option>
                                 ))}
-                            </div>
-                        ) : (
-                            tags.map((tag, index) => (
-                                <button
-                                    key={index}
-                                    onClick={() => handleTagToggle(tag)}
-                                    className={`px-3 py-1 rounded-full text-sm transition-colors ${selectedTags.includes(tag)
-                                        ? 'bg-[#c99e66] text-white'
-                                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                            </select>
+                        </motion.div>
+
+                        {/* Clear Filters Button */}
+                        <motion.div variants={filterVariants} className="flex items-end">
+                            <button
+                                onClick={clearFilters}
+                                className="w-full bg-gradient-to-r from-[#c99e66] to-[#b08d5a] text-white py-3 px-4 rounded-xl hover:from-[#b08d5a] hover:to-[#9c7c4e] transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-xl font-semibold cursor-pointer"
+                            >
+                                🗑️ Clear Filters
+                            </button>
+                        </motion.div>
+                    </div>
+
+                    {/* Tags Filter */}
+                    <motion.div variants={filterVariants} className="mt-6">
+                        <label className="block text-sm font-semibold text-gray-700 mb-3">
+                            🏷️ Filter by Tags
+                        </label>
+                        <div className="flex flex-wrap gap-2">
+                            {tagsLoading ? (
+                                <div className="flex space-x-2">
+                                    {[...Array(5)].map((_, i) => (
+                                        <div key={i} className="h-8 w-20 bg-gray-200 rounded-full animate-pulse"></div>
+                                    ))}
+                                </div>
+                            ) : (
+                                tags.map((tag, index) => (
+                                    <motion.button
+                                        key={index}
+                                        whileHover={{ scale: 1.05 }}
+                                        whileTap={{ scale: 0.95 }}
+                                        onClick={() => handleTagToggle(tag)}
+                                        className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 transform ${selectedTags.includes(tag)
+                                            ? 'bg-gradient-to-r from-[#c99e66] to-[#b08d5a] text-white shadow-lg'
+                                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:shadow-md'
+                                            }`}
+                                    >
+                                        {tag}
+                                    </motion.button>
+                                ))
+                            )}
+                        </div>
+                    </motion.div>
+                </motion.div>
+
+                {/* Articles Count */}
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.3 }}
+                    className="mb-6"
+                >
+                    <p className="text-gray-600 font-medium">
+                        📊 Found <span className="text-[#c99e66] font-bold">{articles.length}</span> articles
+                        {selectedPublisher && ` from ${selectedPublisher}`}
+                        {selectedTags.length > 0 && ` with ${selectedTags.length} tags`}
+                    </p>
+                </motion.div>
+
+                {/* Articles Grid */}
+                <AnimatePresence mode="wait">
+                    {articles.length === 0 ? (
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.9 }}
+                            className="text-center py-16 bg-white rounded-2xl shadow-lg"
+                        >
+                            <div className="text-6xl mb-4">📭</div>
+                            <h3 className="text-2xl font-bold text-gray-800 mb-3">No Articles Found</h3>
+                            <p className="text-gray-600 mb-6 max-w-md mx-auto">
+                                We couldn't find any articles matching your criteria. Try adjusting your filters or search term.
+                            </p>
+                            <button
+                                onClick={clearFilters}
+                                className="bg-gradient-to-r from-[#c99e66] to-[#b08d5a] text-white px-6 py-3 rounded-xl hover:from-[#b08d5a] hover:to-[#9c7c4e] transition-all duration-300 font-semibold"
+                            >
+                                Clear All Filters
+                            </button>
+                        </motion.div>
+                    ) : (
+                        <motion.div
+                            variants={containerVariants}
+                            initial="hidden"
+                            animate="visible"
+                            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+                        >
+                            {articles.map((article) => (
+                                <motion.div
+                                    key={article._id}
+                                    variants={itemVariants}
+                                    whileHover={{
+                                        y: -8,
+                                        transition: { duration: 0.3 }
+                                    }}
+                                    className={`bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 group relative ${article.isPremium
+                                        ? 'border-2 border-orange-400 bg-gradient-to-br from-amber-50/50 to-white'
+                                        : 'border border-gray-100'
                                         }`}
                                 >
-                                    {tag}
-                                </button>
-                            ))
-                        )}
-                    </div>
-                </div>
-            </div>
-
-            {/* Articles Grid */}
-            {articles.length === 0 ? (
-                <div className="text-center py-12">
-                    <p className="text-gray-600">No articles found matching your criteria.</p>
-                    <p className="text-sm text-gray-500 mt-2">Try adjusting your filters or search term.</p>
-                </div>
-            ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {articles.map(article => (
-                        <div
-                            key={article._id}
-                            className={`bg-white rounded-lg shadow-md overflow-hidden transition-transform hover:scale-105 relative ${article.isPremium
-                                ? 'border-2 border-orange-500 bg-gradient-to-br from-amber-50 to-white'
-                                : 'border border-gray-200'
-                                }`}
-                        >
-                            {/* Premium ribbon for premium articles */}
-                            {article.isPremium && (
-                                <div className="absolute top-0 right-0 w-16 h-16 overflow-hidden">
-                                    <div className="absolute transform rotate-45 bg-orange-500 text-white text-xs py-1 w-24 top-4 -right-8 flex items-center justify-center">
-                                        Premium
-                                    </div>
-                                </div>
-                            )}
-
-                            <img
-                                src={article.image}
-                                alt={article.title}
-                                className="w-full h-48 object-cover"
-                            />
-                            <div className="p-4">
-                                <h3 className="text-xl font-semibold mb-2 text-gray-800">{article.title}</h3>
-                                <p className="text-gray-600 mb-4">
-                                    {article.description.length > 100
-                                        ? `${article.description.substring(0, 100)}...`
-                                        : article.description
-                                    }
-                                </p>
-
-                                <div className="flex justify-between items-center mb-4">
-                                    <span className="text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded">
-                                        {article.publisher}
-                                    </span>
+                                    {/* Premium Badge */}
                                     {article.isPremium && (
-                                        <span className="text-sm bg-orange-500 text-white px-2 py-1 rounded flex items-center">
-                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                                                <path fillRule="evenodd" d="M5 2a1 1 0 011 1v1h1a1 1 0 010 2H6v1a1 1 0 01-2 0V6H3a1 1 0 010-2h1V3a1 1 0 011-1zm0 10a1 1 0 011 1v1h1a1 1 0 110 2H6v1a1 1 0 11-2 0v-1H3a1 1 0 110-2h1v-1a1 1 0 011-1zM12 2a1 1 0 01.967.744L14.146 7.2 17.5 9.134a1 1 0 010 1.732l-3.354 1.935-1.18 4.455a1 1 0 01-1.933 0L9.854 12.2 6.5 10.266a1 1 0 010-1.732l3.354-1.935 1.18-4.455A1 1 0 0112 2z" clipRule="evenodd" />
-                                            </svg>
-                                            Premium
-                                        </span>
+                                        <div className="absolute top-4 right-4 z-10">
+                                            <span className="bg-gradient-to-r from-orange-500 to-amber-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg flex items-center">
+                                                ⭐ Premium
+                                            </span>
+                                        </div>
                                     )}
-                                </div>
 
-                                <div className="flex justify-between items-center">
-                                    <span className="text-sm text-gray-500">{article.views} views</span>
-                                    <Link
-                                        to={`/article/${article._id}`}
-                                        className={`px-4 py-2 rounded text-white transition-colors ${article.isPremium && !user?.premiumTaken
-                                            ? 'bg-gray-400 cursor-not-allowed'
-                                            : 'bg-[#c99e66] hover:bg-amber-700'
-                                            }`}
-                                        onClick={(e) => {
-                                            if (article.isPremium && !user?.premiumTaken) {
-                                                e.preventDefault();
-                                                alert('Premium subscription required to read this article');
-                                            } else {
-                                                // Invalidate queries when navigating to article details
-                                                queryClient.invalidateQueries({ queryKey: ['articles'] });
-                                            }
-                                        }}
-                                    >
-                                        Read Details
-                                    </Link>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            )}
+                                    {/* Article Image */}
+                                    <div className="relative overflow-hidden">
+                                        <img
+                                            src={article.image}
+                                            alt={article.title}
+                                            className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
+                                        />
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                    </div>
+
+                                    {/* Article Content */}
+                                    <div className="p-6">
+                                        {/* Publisher */}
+                                        <div className="mb-3">
+                                            <span className="inline-block bg-gray-100 text-gray-600 text-xs font-semibold px-3 py-1 rounded-full">
+                                                {article.publisher}
+                                            </span>
+                                        </div>
+
+                                        {/* Title */}
+                                        <h3 className="text-xl font-bold text-gray-800 mb-3 leading-tight line-clamp-2 group-hover:text-[#c99e66] transition-colors duration-300">
+                                            {article.title}
+                                        </h3>
+
+                                        {/* Description */}
+                                        <p className="text-gray-600 mb-4 leading-relaxed line-clamp-3">
+                                            {article.description}
+                                        </p>
+
+                                        {/* Tags */}
+                                        {article.tags && article.tags.length > 0 && (
+                                            <div className="flex flex-wrap gap-1 mb-4">
+                                                {article.tags.slice(0, 3).map((tag, tagIndex) => (
+                                                    <span
+                                                        key={tagIndex}
+                                                        className="bg-[#f8f5f1] text-[#c99e66] text-xs px-2 py-1 rounded-full border border-[#c99e66]/30"
+                                                    >
+                                                        {tag}
+                                                    </span>
+                                                ))}
+                                                {article.tags.length > 3 && (
+                                                    <span className="bg-gray-100 text-gray-500 text-xs px-2 py-1 rounded-full">
+                                                        +{article.tags.length - 3}
+                                                    </span>
+                                                )}
+                                            </div>
+                                        )}
+
+                                        {/* Footer */}
+                                        <div className="flex justify-between items-center pt-4 border-t border-gray-100">
+                                            <div className="flex items-center space-x-4 text-sm text-gray-500">
+                                                <span className="flex items-center">
+                                                    👁️ {article.views} views
+                                                </span>
+                                            </div>
+
+                                            <Link
+                                                to={`/article/${article._id}`}
+                                                onClick={() => {
+                                                    if (article.isPremium && !user?.premiumTaken) {
+                                                        alert('🔒 Premium subscription required to read this article');
+                                                        return;
+                                                    }
+                                                    queryClient.invalidateQueries({ queryKey: ['articles'] });
+                                                }}
+                                                className={`px-4 py-2 rounded-xl font-semibold transition-all duration-300 transform ${article.isPremium && !user?.premiumTaken
+                                                    ? 'bg-gray-400 text-gray-200 cursor-not-allowed'
+                                                    : 'bg-gradient-to-r from-[#c99e66] to-[#b08d5a] text-white hover:from-[#b08d5a] hover:to-[#9c7c4e] hover:shadow-lg cursor-pointer'
+                                                    }`}
+                                            >
+                                                {article.isPremium && !user?.premiumTaken ? '🔒 Locked' : 'Read →'}
+                                            </Link>
+                                        </div>
+                                    </div>
+                                </motion.div>
+                            ))}
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+            </div>
         </div>
     );
 };
