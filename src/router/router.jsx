@@ -18,6 +18,7 @@ import DashBoardAllArticles from "../Pages/DashBoard/DashBoardAllArticles/DashBo
 import AllUsers from "../Pages/DashBoard/AllUsers/AllUsers";
 import DashBoardHome from "../Pages/DashBoard/DashBoardHome/DashBoardHome";
 import AdminRoute from "./AdminRoute/AdminRoute";
+import PublisherArticles from "../Pages/PublisherArticles/PublisherArticles";
 
 export const router = createBrowserRouter([
     {
@@ -73,6 +74,11 @@ export const router = createBrowserRouter([
             element: <PrivateRoute>
                 <EditArticle></EditArticle>
             </PrivateRoute>
+        },
+        {
+            path: "/publisher/:publisherName",
+            element: <PublisherArticles></PublisherArticles>
+
         },
         {
             path: "/profile",
