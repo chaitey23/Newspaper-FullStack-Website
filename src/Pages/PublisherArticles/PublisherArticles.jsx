@@ -1,4 +1,3 @@
-// src/pages/PublisherArticles.jsx
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -7,7 +6,6 @@ import axios from 'axios';
 const PublisherArticles = () => {
     const { publisherName } = useParams();
 
-    // Decode the publisher name (URL theke asche)
     const decodedPublisherName = decodeURIComponent(publisherName);
 
     console.log('Publisher Name from URL:', publisherName);

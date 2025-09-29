@@ -1,49 +1,153 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import SocialLogin from '../../Components/SocialLogin/SocialLogin';
-import { Link, useLocation, useNavigate } from 'react-router';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { AuthContext } from '../../Context/AuthContext/AuthContext';
 import axios from 'axios';
+import { FaUpload, FaSpinner, FaTimes } from 'react-icons/fa';
 
 const Register = () => {
     const { createUser, loading, user } = useContext(AuthContext)
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-    const { register, handleSubmit, formState: { errors }, watch, reset } = useForm();
+    const [imageUploading, setImageUploading] = useState(false);
+    const [previewImage, setPreviewImage] = useState("");
+    const { register, handleSubmit, formState: { errors }, watch, reset, setValue } = useForm();
     const navigate = useNavigate();
     const location = useLocation();
     const from = location.state?.from?.pathname || "/";
 
     const password = watch("password", "");
+
     useEffect(() => {
         if (!loading && user) {
             navigate(from, { replace: true });
         }
     }, [loading, user, from, navigate]);
 
+    const handleImageUpload = async (file) => {
+        if (!file) return null;
+
+        // Validate file type
+        if (!file.type.startsWith('image/')) {
+            toast.error('Please select an image file');
+            return null;
+        }
+
+        // Validate file size (max 5MB)
+        if (file.size > 5 * 1024 * 1024) {
+            toast.error('Image size should be less than 5MB');
+            return null;
+        }
+
+        setImageUploading(true);
+
+        // Upload to imgBB
+        const formData = new FormData();
+        formData.append('image', file);
+
+        try {
+            const response = await fetch(`https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_IMGBB_API_KEY}`, {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                toast.success('Profile picture uploaded successfully!');
+                return data.data.url;
+            } else {
+                throw new Error(data.error?.message || 'Image upload failed');
+            }
+        } catch (error) {
+            console.error('Image upload error:', error);
+            toast.error('Failed to upload image');
+            return null;
+        } finally {
+            setImageUploading(false);
+        }
+    };
+
+    const handleFileChange = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        // Create preview immediately
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            setPreviewImage(e.target.result);
+        };
+        reader.readAsDataURL(file);
+
+        // Upload image and get URL
+        const imageUrl = await handleImageUpload(file);
+        if (imageUrl) {
+            setValue('photoURL', imageUrl); // Set the value in react-hook-form
+        }
+    };
+
+    const removeImage = () => {
+        setPreviewImage("");
+        setValue('photoURL', "");
+        // Clear the file input
+        const fileInput = document.getElementById('profileImage');
+        if (fileInput) fileInput.value = "";
+    };
+
+    // const onSubmit = async (data) => {
+    //     try {
+    //         const result = await createUser(data.email, data.password)
+
+    //         toast.success('Registration successful! Welcome to NewsPortal.');
+    //         reset()
+    //         setPreviewImage(""); // Clear preview on success
+    //         console.log('Registered user:', result.user);
+
+    //         const userData = {
+    //             uid: result.user.uid,
+    //             name: data.name,
+    //             email: result.user.email,
+    //             photoURL: data.photoURL || '' // Use the uploaded photo URL
+    //         };
+
+    //         await axios.post(`${import.meta.env.VITE_BASE_URL}/users`, userData)
+    //     } catch (error) {
+    //         toast.error('Registration failed. Please try again.');
+    //         console.log(error);
+    //     }
+    // };
     const onSubmit = async (data) => {
         try {
-            const result = await createUser(data.email, data.password)
+            // Pass user info to createUser function
+            const result = await createUser(data.email, data.password, {
+                displayName: data.name,
+                photoURL: data.photoURL
+            });
 
             toast.success('Registration successful! Welcome to NewsPortal.');
-            reset()
+            reset();
+            setPreviewImage("");
             console.log('Registered user:', result.user);
+
             const userData = {
                 uid: result.user.uid,
                 name: data.name,
                 email: result.user.email,
-                photoURL: result.user.photoURL || ''
+                photoURL: data.photoURL || '',
+                role: 'user',
+                premiumTaken: null,
+                createdAt: new Date()
             };
-            await axios.post(`${import.meta.env.VITE_BASE_URL}/users`, userData)
+
+            await axios.post(`${import.meta.env.VITE_BASE_URL}/users`, userData);
+
         } catch (error) {
             toast.error('Registration failed. Please try again.');
             console.log(error);
-
-
         }
     };
-
     return (
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 py-12 px-4 sm:px-6 lg:px-8">
             <div className="max-w-md w-full bg-white rounded-xl shadow-lg overflow-hidden">
@@ -54,6 +158,66 @@ const Register = () => {
                     </div>
 
                     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                        {/* Profile Picture Upload */}
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                Profile Picture
+                            </label>
+
+                            {/* Image Preview */}
+                            {previewImage && (
+                                <div className="mb-4 relative">
+                                    <img
+                                        src={previewImage}
+                                        alt="Profile preview"
+                                        className="w-24 h-24 object-cover rounded-full border-2 border-[#c99e66] mx-auto"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={removeImage}
+                                        className="absolute top-0 right-1/2 transform translate-x-12 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition duration-200"
+                                    >
+                                        <FaTimes className="w-3 h-3" />
+                                    </button>
+                                </div>
+                            )}
+
+                            {/* File Input */}
+                            <div className="flex items-center justify-center w-full">
+                                <label className={`flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer transition-colors ${imageUploading ? 'border-amber-400 bg-amber-50' : 'border-gray-300 hover:border-[#c99e66] hover:bg-gray-50'
+                                    }`}>
+                                    <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                                        {imageUploading ? (
+                                            <>
+                                                <FaSpinner className="w-8 h-8 mb-2 text-amber-600 animate-spin" />
+                                                <p className="text-sm text-amber-600">Uploading...</p>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <FaUpload className="w-8 h-8 mb-2 text-gray-400" />
+                                                <p className="text-sm text-gray-500">
+                                                    <span className="font-semibold">Click to upload</span> or drag and drop
+                                                </p>
+                                                <p className="text-xs text-gray-400">PNG, JPG, JPEG (Max 5MB)</p>
+                                            </>
+                                        )}
+                                    </div>
+                                    <input
+                                        id="profileImage"
+                                        type="file"
+                                        className="hidden"
+                                        accept="image/*"
+                                        onChange={handleFileChange}
+                                        disabled={imageUploading}
+                                    />
+                                    <input
+                                        type="hidden"
+                                        {...register("photoURL")}
+                                    />
+                                </label>
+                            </div>
+                        </div>
+
                         <div>
                             <label htmlFor="name" className="block text-sm font-medium text-gray-700">
                                 Full Name
@@ -212,7 +376,7 @@ const Register = () => {
                             <button
                                 type="submit"
                                 className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-[#c99e66] hover:bg-[#b58c58] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#c99e66] transition duration-200 cursor-pointer"
-                                disabled={loading}
+                                disabled={loading || imageUploading}
                             >
                                 {loading ? (
                                     <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -223,17 +387,10 @@ const Register = () => {
                                     "Create Account"
                                 )}
                             </button>
-
                         </div>
                     </form>
 
                     <div className="mt-6">
-                        <div className="relative">
-                            <div className="absolute inset-0 flex items-center">
-
-                            </div>
-
-                        </div>
                         <SocialLogin />
                     </div>
 

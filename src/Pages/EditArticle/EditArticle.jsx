@@ -1,14 +1,3 @@
-// import React from 'react';
-
-// const EditArticle = () => {
-//     return (
-//         <div>
-
-//         </div>
-//     );
-// };
-
-// export default EditArticle;
 import React, { useState, useEffect, useContext } from 'react';
 import Select from 'react-select';
 import { toast } from 'react-hot-toast';

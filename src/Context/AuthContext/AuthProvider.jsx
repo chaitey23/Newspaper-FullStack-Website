@@ -6,10 +6,29 @@ import { auth } from '../../Firebase/firebase.init';
 const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
     const [user, setUser] = useState(null);
-
-    const createUser = (email, password) => {
+    const createUser = async (email, password, userInfo = {}) => {
         setLoading(true);
-        return createUserWithEmailAndPassword(auth, email, password);
+        try {
+            const result = await createUserWithEmailAndPassword(auth, email, password);
+            console.log('User created in Firebase:', result.user);
+
+            // Update Firebase user profile with name and photoURL
+            if (userInfo.displayName || userInfo.photoURL) {
+                console.log('Updating profile with:', userInfo);
+                await updateProfile(result.user, {
+                    displayName: userInfo.displayName,
+                    photoURL: userInfo.photoURL
+                });
+                console.log('Profile updated successfully');
+            }
+
+            return result;
+        } catch (error) {
+            console.error('Error in createUser:', error);
+            throw error;
+        } finally {
+            setLoading(false);
+        }
     };
 
     const signInUser = (email, password) => {
