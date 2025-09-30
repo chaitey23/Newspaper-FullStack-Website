@@ -2,6 +2,7 @@ import React from 'react';
 import TrendingArticles from '../../Components/TrendingArticles/TrendingArticles';
 import PublisherSection from '../../Components/PublisherSection/PublisherSection';
 import SubscriptionSection from '../../Components/subscriptionSection/SubscriptionSection';
+import StatisticsSection from '../../Components/StatisticsSection/StatisticsSection';
 
 const Home = () => {
     return (
@@ -9,6 +10,7 @@ const Home = () => {
             <TrendingArticles></TrendingArticles>
             <PublisherSection></PublisherSection>
             <SubscriptionSection></SubscriptionSection>
+            <StatisticsSection></StatisticsSection>
         </>
     );
 };
