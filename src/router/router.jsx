@@ -20,12 +20,14 @@ import DashBoardHome from "../Pages/DashBoard/DashBoardHome/DashBoardHome";
 import AdminRoute from "./AdminRoute/AdminRoute";
 import PublisherArticles from "../Pages/PublisherArticles/PublisherArticles";
 import PremiumArticles from "../Pages/PremiumArticles/PremiumArticles";
+import ErrorPage from "../Pages/ErrorPage/ErrorPage";
 
 
 export const router = createBrowserRouter([
     {
         path: "/",
         Component: MainLayout,
+        errorElement: <ErrorPage></ErrorPage>,
         children: [{
             index: true,
             element: <Home></Home>
@@ -103,6 +105,7 @@ export const router = createBrowserRouter([
         element: <AdminRoute>
             <DashBoardLayout></DashBoardLayout>
         </AdminRoute>,
+        errorElement: <ErrorPage></ErrorPage>,
         children: [
             {
                 index: true,
