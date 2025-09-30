@@ -19,6 +19,8 @@ import AllUsers from "../Pages/DashBoard/AllUsers/AllUsers";
 import DashBoardHome from "../Pages/DashBoard/DashBoardHome/DashBoardHome";
 import AdminRoute from "./AdminRoute/AdminRoute";
 import PublisherArticles from "../Pages/PublisherArticles/PublisherArticles";
+import PremiumArticles from "../Pages/PremiumArticles/PremiumArticles";
+
 
 export const router = createBrowserRouter([
     {
@@ -49,7 +51,15 @@ export const router = createBrowserRouter([
 
         {
             path: "/subscription",
-            element: <Subscription></Subscription>
+            element: <PrivateRoute>
+                <Subscription></Subscription>
+            </PrivateRoute>
+        },
+        {
+            path: "/premium-articles",
+            element: <PrivateRoute>
+                <PremiumArticles></PremiumArticles>
+            </PrivateRoute>
         },
         {
             path: "/add-article",
