@@ -1,12 +1,43 @@
-# React + Vite
+# Newspaper FullStack Website - Client
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Welcome to the **Newspaper FullStack Website** frontend! This is a dynamic news aggregation platform built with **React**, **Firebase**, **React Router**, **Tailwind CSS**, and **TanStack Query**, designed to deliver trending and premium news articles seamlessly.
 
-Currently, two official plugins are available:
+## Admin Credentials (For testing)
+- **Email:** admin@example.com  
+- **Password:** Admin@123  
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Live Site
+[Live Demo Link](newspaper-fullstack-webs-53e81.web.app)
 
-## Expanding the ESLint configuration
+## Key Features
+1. Responsive design for **mobile, tablet, and desktop**.
+2. **Private routes** for Add Articles, Subscription, Dashboard, My Articles, Profile Page, and Premium Articles.
+3. **JWT authentication** with localStorage to keep users logged in on reload.
+4. Navbar dynamically updates based on **user authentication** status.
+5. Trending articles displayed in a **slider**, calculated by total views.
+6. Full **CRUD functionality** for articles with proper **toast/sweet alert notifications**.
+7. Search and filter articles by **publisher and tags** on All Articles page.
+8. Premium users can post **unlimited articles**, normal users limited to 1.
+9. **Subscription modal** on homepage after 10 seconds for non-premium users.
+10. **Dynamic homepage statistics** using react-countup.
+11. Add Publisher feature for admins with **image upload via imgbb/Cloudinary**.
+12. Detailed Article page with **view count tracking**.
+13. **404 Page** for unmatched routes.
+14. Optional animations using **GSAP** and **typewriter effect** on homepage.
+15. Dynamic page titles and relevant favicon.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Tech Stack
+- React (frontend framework)
+- Firebase (Authentication)
+- React Router (Routing)
+- Tailwind CSS (Styling)
+- TanStack Query (Data fetching)
+- react-hot-toast / sweetalert2 (Notifications)
+- react-simple-typewriter (Typewriting effect)
+- react-countup (Statistics)
+- Axios (HTTP requests)
+
+## Installation
+1. Clone the repository:  
+```bash
+git clone <client-repo-url>
