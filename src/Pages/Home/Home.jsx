@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import TrendingArticles from '../../Components/TrendingArticles/TrendingArticles';
 import PublisherSection from '../../Components/PublisherSection/PublisherSection';
 import SubscriptionSection from '../../Components/subscriptionSection/SubscriptionSection';
@@ -6,9 +6,20 @@ import StatisticsSection from '../../Components/StatisticsSection/StatisticsSect
 import UsePageTitle from '../../hooks/UsePageTitle/UsePageTitle';
 import FeaturedCategoriesSection from '../../Components/FeaturedCategoriesSection/FeaturedCategoriesSection';
 import WhyChooseUs from '../../Components/WhyChooseUs/WhyChooseUs';
+import SubscriptionModal from '../../Components/SubscriptionModal/SubcriptionModal';
+
 
 const Home = () => {
-    UsePageTitle("Home")
+    UsePageTitle("Home");
+    const [showModal, setShowModal] = useState(false);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setShowModal(true);
+        }, 10000);
+
+        return () => clearTimeout(timer);
+    }, []);
     return (
         <>
             <TrendingArticles></TrendingArticles>
@@ -17,6 +28,8 @@ const Home = () => {
             <StatisticsSection></StatisticsSection>
             <FeaturedCategoriesSection></FeaturedCategoriesSection>
             <WhyChooseUs></WhyChooseUs>
+            <SubscriptionModal show={showModal} onClose={() => setShowModal(false)}>
+            </SubscriptionModal>
         </>
     );
 };
