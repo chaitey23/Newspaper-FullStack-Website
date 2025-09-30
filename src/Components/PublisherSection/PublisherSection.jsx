@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router';
+import UsePageTitle from '../../hooks/UsePageTitle/UsePageTitle';
 
 const fetchPublishers = async () => {
     const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/publishers`);
@@ -10,6 +11,7 @@ const fetchPublishers = async () => {
 };
 
 const PublisherSection = () => {
+    UsePageTitle("PublisherSection")
     const navigate = useNavigate();
     const { data: publishers, isLoading, isError } = useQuery({
         queryKey: ['publishers'],

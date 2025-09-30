@@ -2,8 +2,10 @@ import React from 'react';
 import { useNavigate } from 'react-router';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
+import UsePageTitle from '../../hooks/UsePageTitle/UsePageTitle';
 
 const SubscriptionSection = () => {
+    UsePageTitle("SubscriptionSection")
     const navigate = useNavigate();
 
     const handleSubscribe = (planType) => {

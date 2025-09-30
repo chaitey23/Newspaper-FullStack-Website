@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import CountUp from 'react-countup';
 import useAxiosSecure from '../../hooks/useAxiosSecure';
+import UsePageTitle from '../../hooks/UsePageTitle/UsePageTitle';
 
 const StatisticsSection = () => {
+    UsePageTitle("StatisticsSection")
     const [stats, setStats] = useState({
         totalUsers: 0,
         normalUsers: 0,

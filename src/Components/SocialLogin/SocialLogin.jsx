@@ -2,8 +2,10 @@ import React, { useContext } from 'react';
 import { AuthContext } from '../../Context/AuthContext/AuthContext';
 import { toast } from 'react-toastify';
 import axios from 'axios';
+import UsePageTitle from '../../hooks/UsePageTitle/UsePageTitle';
 
 const SocialLogin = () => {
+    UsePageTitle("SocialLogin")
     const { googleSignIn } = useContext(AuthContext);
     const handleGoogleLogin = () => {
         googleSignIn()

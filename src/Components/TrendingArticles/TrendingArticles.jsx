@@ -9,8 +9,10 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/autoplay';
 import { Link } from 'react-router-dom';
+import UsePageTitle from '../../hooks/UsePageTitle/UsePageTitle';
 
 const TrendingArticles = () => {
+    UsePageTitle("TrendingArticles")
     const [articles, setArticles] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
