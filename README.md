@@ -37,7 +37,19 @@ Welcome to the **Newspaper FullStack Website** frontend! This is a dynamic news 
 - react-countup (Statistics)
 - Axios (HTTP requests)
 
+## 📸 Screenshots
+
+### Home Page
+![Home Page](./Screenshot-home.png)
+
+### Discover Articles
+![Book Categories](./Screenshot-DiscoverArticles.png)
+
+### Dashboard
+![Borrowed Books](./Screenshot-dashboard.png)
+
+
 ## Installation
 1. Clone the repository:  
 ```bash
-git clone <client-repo-url>
+git clone <https://github.com/chaitey23/Library-management-client>
