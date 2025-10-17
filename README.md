@@ -7,7 +7,7 @@ Welcome to the **Newspaper FullStack Website** frontend! This is a dynamic news 
 - **Password:** Admin@123  
 
 ## Live Site
-[Live Demo Link](newspaper-fullstack-webs-53e81.web.app)
+[Live Demo Link](https://newspaper-fullstack-webs-53e81.web.app/)
 
 ## Key Features
 1. Responsive design for **mobile, tablet, and desktop**.
