@@ -7,6 +7,7 @@ import UsePageTitle from '../../hooks/UsePageTitle/UsePageTitle';
 import FeaturedCategoriesSection from '../../Components/FeaturedCategoriesSection/FeaturedCategoriesSection';
 import WhyChooseUs from '../../Components/WhyChooseUs/WhyChooseUs';
 import SubscriptionModal from '../../Components/SubscriptionModal/SubcriptionModal';
+import HeroSection from '../../Components/HeroSection/HeroSection';
 
 
 const Home = () => {
@@ -22,6 +23,7 @@ const Home = () => {
     }, []);
     return (
         <>
+            <HeroSection></HeroSection>
             <TrendingArticles></TrendingArticles>
             <PublisherSection></PublisherSection>
             <SubscriptionSection></SubscriptionSection>
