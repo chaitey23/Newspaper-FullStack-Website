@@ -12,7 +12,7 @@ const SubscriptionSection = () => {
         navigate(`/subscription?plan=${planType}`);
     };
 
-    // Animation variants
+    // Animation variants (same as before)
     const containerVariants = {
         hidden: { opacity: 0 },
         visible: {
@@ -24,15 +24,9 @@ const SubscriptionSection = () => {
     };
 
     const itemVariants = {
-        hidden: {
-            opacity: 0,
-            y: 50,
-            scale: 0.9
-        },
+        hidden: { opacity: 0, y: 50, scale: 0.9 },
         visible: {
-            opacity: 1,
-            y: 0,
-            scale: 1,
+            opacity: 1, y: 0, scale: 1,
             transition: {
                 type: "spring",
                 stiffness: 100,
@@ -42,104 +36,85 @@ const SubscriptionSection = () => {
         }
     };
 
-    const cardHoverVariants = {
-        hover: {
-            y: -10,
-            scale: 1.02,
-            transition: {
-                type: "spring",
-                stiffness: 300,
-                damping: 15
-            }
-        },
-        tap: {
-            scale: 0.98
-        }
-    };
-
-    const popularBadgeVariants = {
-        hover: {
-            scale: [1, 1.1, 1],
-            transition: {
-                duration: 0.6,
-                repeat: Infinity
-            }
-        }
-    };
-
+    // ✅ CORRECTED PLANS FOR NEWSPAPER WEBSITE
     const plans = [
         {
-            id: 'individual',
-            title: 'Premium Individual',
-            price: '$9.99',
+            id: 'basic',
+            title: 'Basic Reader',
+            price: '$4.99',
             period: 'month',
             popular: false,
             features: [
-                '1 Premium account',
-                'Cancel anytime',
-                '1 hour/month of listening time from our audiobooks subscription catalog'
+                'Access to all free articles',
+                'Limited premium articles (5/month)',
+                'Basic search functionality',
+                'Email newsletter subscription',
+                'Ad-supported experience'
             ],
-            buttonText: 'Try free for 1 month',
-            note: 'Then $9.99/month'
+            buttonText: 'Start Reading',
+            note: 'Perfect for casual readers'
         },
         {
-            id: 'duo',
-            title: 'Premium Duo',
-            price: '$12.99',
+            id: 'premium',
+            title: 'Premium Subscriber',
+            price: '$9.99',
             period: 'month',
             popular: true,
             features: [
-                '2 Premium accounts',
-                'Cancel anytime',
-                '1 hour/month of listening time from our audiobooks subscription catalog (with manager only)'
+                'Unlimited premium articles',
+                'Ad-free reading experience',
+                'Advanced search filters',
+                'Download articles for offline',
+                'Early access to exclusive content',
+                'Priority customer support'
             ],
-            buttonText: 'Get Premium Duo',
-            note: 'For users in the same address: $12.99/month'
+            buttonText: 'Go Premium',
+            note: 'Most popular choice'
         },
         {
             id: 'family',
-            title: 'Premium Family',
-            price: '$15.99',
+            title: 'Family Plan',
+            price: '$14.99',
             period: 'month',
             popular: false,
             features: [
-                'Up to 6 Premium or Kids accounts',
-                'Block explicit music',
-                'Access to Spotify Kids',
-                'Cancel anytime',
-                '1 hour/month of listening time from our audiobooks subscription catalog (with manager only)'
+                'Up to 5 family members',
+                'All Premium features',
+                'Individual reading profiles',
+                'Parental controls',
+                'Family content sharing',
+                'Dedicated family support'
             ],
-            buttonText: 'Get Premium Family',
-            note: 'Up to 6 users/month staying at the same address: $15.99/month'
+            buttonText: 'Family Access',
+            note: 'Share with your household'
         }
     ];
 
-    // Intersection Observer hook for header
     const [headerRef, headerInView] = useInView({
         triggerOnce: true,
         threshold: 0.1
     });
 
     return (
-        <div className="bg-gradient-to-br from-gray-50 to-[#faf6f0] mt-20 py-16 px-4 sm:px-6 lg:px-8 text-white">
-            {/* Header with animation */}
+        <div className="bg-gradient-to-br from-gray-50 to-[#faf6f0] py-16 px-4 sm:px-6 lg:px-8">
+            {/* Header */}
             <motion.div
                 ref={headerRef}
                 initial={{ opacity: 0, y: 30 }}
                 animate={headerInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-                transition={{ duration: 0.8, ease: "easeOut" }}
+                transition={{ duration: 0.8 }}
                 className="text-center mb-16"
             >
-                <h2 className="text-4xl font-bold sm:text-5xl lg:text-6xl mb-6 text-black">
-                    Choose Your Plan
+                <h2 className="text-4xl font-bold sm:text-5xl lg:text-6xl mb-6 text-gray-900">
+                    Choose Your Subscription
                 </h2>
                 <motion.p
                     initial={{ opacity: 0 }}
                     animate={headerInView ? { opacity: 1 } : { opacity: 0 }}
-                    transition={{ delay: 0.3, duration: 0.6 }}
+                    transition={{ delay: 0.3 }}
                     className="text-xl text-gray-600 max-w-2xl mx-auto"
                 >
-                    Premium features for every type of listener. Cancel anytime.
+                    Unlock premium journalism and read without limits. Cancel anytime.
                 </motion.p>
             </motion.div>
 
@@ -155,115 +130,81 @@ const SubscriptionSection = () => {
                     <motion.div
                         key={plan.id}
                         variants={itemVariants}
-                        whileHover="hover"
-                        whileTap="tap"
-                        custom={index}
+                        whileHover={{ y: -10, scale: 1.02 }}
                         className="relative"
                     >
-                        <motion.div
-                            variants={cardHoverVariants}
-                            className={`relative rounded-2xl transition-all duration-300 overflow-hidden ${plan.popular
-                                ? 'bg-gradient-to-b from-purple-900 to-black border-2 border-purple-500 shadow-2xl shadow-purple-500/20'
-                                : 'bg-gray-900 border border-gray-700 shadow-xl'
-                                }`}
-                        >
-                            {/* Gradient Overlay */}
-                            <div className="absolute inset-0 bg-gradient-to-br from-transparent to-black/20 pointer-events-none" />
+                        <div className={`relative rounded-2xl transition-all duration-300 overflow-hidden h-full flex flex-col ${plan.popular
+                            ? 'bg-gradient-to-b from-[#c99e66] to-[#b08d5a] border-2 border-[#c99e66] shadow-2xl shadow-[#c99e66]/20'
+                            : 'bg-white border border-gray-200 shadow-xl'
+                            }`}>
 
                             {/* Popular Badge */}
                             {plan.popular && (
-                                <motion.div
-                                    variants={popularBadgeVariants}
-                                    className="absolute -top-3 left-1/2 transform -translate-x-1/2 z-10"
-                                >
-                                    <span className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-2 rounded-full text-sm font-semibold shadow-lg">
+                                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
+                                    <span className="bg-gray-900 text-white px-6 py-2 rounded-full text-sm font-semibold shadow-lg">
                                         Most Popular
                                     </span>
-                                </motion.div>
+                                </div>
                             )}
 
-                            <div className="relative p-8 z-0">
+                            <div className="p-8 flex-1 flex flex-col">
                                 {/* Plan Title */}
-                                <motion.h3
-                                    initial={{ opacity: 0, x: -20 }}
-                                    whileInView={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 0.2 + index * 0.1 }}
-                                    className="text-2xl font-bold mb-4"
-                                >
+                                <h3 className={`text-2xl font-bold mb-4 ${plan.popular ? 'text-white' : 'text-gray-900'
+                                    }`}>
                                     {plan.title}
-                                </motion.h3>
+                                </h3>
 
                                 {/* Price */}
-                                <motion.div
-                                    initial={{ opacity: 0, scale: 0.8 }}
-                                    whileInView={{ opacity: 1, scale: 1 }}
-                                    transition={{ delay: 0.3 + index * 0.1 }}
-                                    className="mb-6"
-                                >
+                                <div className={`mb-6 ${plan.popular ? 'text-white' : 'text-gray-900'
+                                    }`}>
                                     <span className="text-4xl font-bold">
                                         {plan.price}
                                     </span>
-                                    <span className="text-lg text-gray-400">/{plan.period}</span>
-                                </motion.div>
+                                    <span className="text-lg opacity-80">/{plan.period}</span>
+                                </div>
 
                                 {/* Features List */}
-                                <ul className="space-y-4 mb-8">
+                                <ul className="space-y-4 mb-8 flex-1">
                                     {plan.features.map((feature, featureIndex) => (
-                                        <motion.li
-                                            key={featureIndex}
-                                            initial={{ opacity: 0, x: -10 }}
-                                            whileInView={{ opacity: 1, x: 0 }}
-                                            transition={{ delay: 0.4 + (index * 0.1) + (featureIndex * 0.1) }}
-                                            className="flex items-start"
-                                        >
-                                            <motion.svg
-                                                whileHover={{ scale: 1.2, rotate: 5 }}
-                                                className="h-6 w-6 text-purple-500 mr-3 flex-shrink-0"
+                                        <li key={featureIndex} className="flex items-start">
+                                            <svg
+                                                className={`h-5 w-5 mr-3 mt-0.5 flex-shrink-0 ${plan.popular ? 'text-white' : 'text-[#c99e66]'
+                                                    }`}
                                                 fill="none"
                                                 viewBox="0 0 24 24"
                                                 stroke="currentColor"
                                             >
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                                            </motion.svg>
-                                            <span className="text-gray-300">{feature}</span>
-                                        </motion.li>
+                                            </svg>
+                                            <span className={
+                                                plan.popular ? 'text-white/90' : 'text-gray-600'
+                                            }>
+                                                {feature}
+                                            </span>
+                                        </li>
                                     ))}
                                 </ul>
 
                                 {/* Button */}
                                 <motion.button
-                                    whileHover={{
-                                        scale: 1.05,
-                                        transition: { type: "spring", stiffness: 400, damping: 10 }
-                                    }}
+                                    whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
                                     onClick={() => handleSubscribe(plan.id)}
-                                    className={`w-full py-4 px-6 rounded-full font-semibold transition-all duration-300 relative overflow-hidden ${plan.popular
-                                        ? 'bg-white text-black hover:shadow-lg hover:shadow-white/20'
-                                        : 'bg-purple-600 text-white hover:bg-purple-700 hover:shadow-lg hover:shadow-purple-500/20 cursor-pointer'
+                                    className={`w-full py-4 px-6 rounded-full font-semibold transition-all duration-300 ${plan.popular
+                                        ? 'bg-white text-[#c99e66] hover:shadow-lg hover:shadow-white/20'
+                                        : 'bg-[#c99e66] text-white hover:bg-[#b08d5a] hover:shadow-lg hover:shadow-[#c99e66]/20 cursor-pointer'
                                         }`}
                                 >
-                                    {/* Button shine effect */}
-                                    <motion.div
-                                        className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
-                                        initial={{ x: '-100%' }}
-                                        whileHover={{ x: '100%' }}
-                                        transition={{ duration: 0.6 }}
-                                    />
-                                    <span className="relative z-10">{plan.buttonText}</span>
+                                    {plan.buttonText}
                                 </motion.button>
 
                                 {/* Note */}
-                                <motion.p
-                                    initial={{ opacity: 0 }}
-                                    whileInView={{ opacity: 1 }}
-                                    transition={{ delay: 0.6 + index * 0.1 }}
-                                    className="mt-4 text-center text-sm text-gray-400"
-                                >
+                                <p className={`mt-4 text-center text-sm ${plan.popular ? 'text-white/80' : 'text-gray-500'
+                                    }`}>
                                     {plan.note}
-                                </motion.p>
+                                </p>
                             </div>
-                        </motion.div>
+                        </div>
                     </motion.div>
                 ))}
             </motion.div>
@@ -272,12 +213,12 @@ const SubscriptionSection = () => {
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.8, duration: 0.6 }}
+                transition={{ delay: 0.8 }}
                 viewport={{ once: true }}
                 className="text-center mt-16"
             >
                 <p className="text-gray-600 text-sm">
-                    All plans include access to our complete audiobook catalog. Cancel anytime.
+                    All plans include access to our complete article catalog. Cancel anytime.
                 </p>
             </motion.div>
         </div>

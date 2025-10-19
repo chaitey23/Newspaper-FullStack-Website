@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { AuthContext } from '../../../Context/AuthContext/AuthContext';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { FaUser, FaFileAlt, FaCrown, FaCreditCard, FaSignOutAlt, FaChartBar } from 'react-icons/fa';
+import { FaUser, FaFileAlt, FaCrown, FaCreditCard, FaSignOutAlt, FaChartBar, FaUserCircle, FaChevronDown } from 'react-icons/fa';
 
 const Navbar = () => {
     const { user, signOutUser, loading } = useContext(AuthContext);
@@ -246,15 +246,14 @@ const Navbar = () => {
                                                     className="w-full h-full object-cover"
                                                 />
                                             ) : (
-                                                <span className="text-white font-bold text-xl">
-                                                    {user.displayName ? user.displayName.charAt(0).toUpperCase() : user.email?.charAt(0).toUpperCase()}
-                                                </span>
+                                                <FaUserCircle className="w-6 h-6" />
                                             )}
                                         </div>
                                         {user.displayName && (
-                                            <span className="hidden md:inline text-gray-900 font-semibold text-lg tracking-wide bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
-                                                {user.displayName}
-                                            </span>
+                                            <div className="hidden md:flex items-center gap-1">
+                                                <span className="text-gray-900 font-semibold">{user.displayName}</span>
+                                                <FaChevronDown className="w-3 h-3 text-gray-600" />
+                                            </div>
                                         )}
                                     </div>
                                 </Link>
