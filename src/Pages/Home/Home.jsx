@@ -27,9 +27,9 @@ const Home = () => {
             <TrendingArticles></TrendingArticles>
             <PublisherSection></PublisherSection>
             <StatisticsSection></StatisticsSection>
-            <SubscriptionSection></SubscriptionSection>
             <FeaturedCategoriesSection></FeaturedCategoriesSection>
             <WhyChooseUs></WhyChooseUs>
+            <SubscriptionSection></SubscriptionSection>
             <SubscriptionModal show={showModal} onClose={() => setShowModal(false)}>
             </SubscriptionModal>
         </>

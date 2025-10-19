@@ -96,7 +96,7 @@ const SubscriptionSection = () => {
     });
 
     return (
-        <div className="bg-gradient-to-br from-gray-50 to-[#faf6f0] py-16 px-4 sm:px-6 lg:px-8">
+        <div className="bg-gradient-to-br from-gray-50 to-[#faf6f0] py-16 px-4 sm:px-6 lg:px-8 mt-16">
             {/* Header */}
             <motion.div
                 ref={headerRef}

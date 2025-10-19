@@ -57,7 +57,7 @@ const PublisherSection = () => {
     );
 
     return (
-        <section className="py-12 md:py-16 bg-gradient-to-br from-gray-50 to-[#faf6f0]">
+        <section className="py-12 md:py-16 bg-gradient-to-br from-gray-50 to-[#faf6f0] m-16" >
             <div className="container mx-auto px-4">
                 {/* Section Header */}
                 <motion.div

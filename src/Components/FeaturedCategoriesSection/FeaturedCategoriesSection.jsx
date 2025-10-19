@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router';
 
 const FeaturedCategoriesSection = () => {
     const categories = [
@@ -53,7 +54,7 @@ const FeaturedCategoriesSection = () => {
     ];
 
     return (
-        <section className="py-20 bg-gradient-to-br from-gray-50 to-gray-100 relative overflow-hidden">
+        <section className="py-20 bg-gradient-to-br from-gray-50 to-gray-100 relative overflow-hidden mt-16">
             {/* Background decorative elements */}
             <div className="absolute top-0 left-0 w-72 h-72 bg-gradient-to-r from-[#c99e66]/10 to-[#c99e66]/5 rounded-full -translate-x-1/2 -translate-y-1/2"></div>
             <div className="absolute bottom-0 right-0 w-96 h-96 bg-gradient-to-l from-[#c99e66]/10 to-[#c99e66]/5 rounded-full translate-x-1/3 translate-y-1/3"></div>
@@ -140,7 +141,9 @@ const FeaturedCategoriesSection = () => {
                     data-aos-delay="500"
                 >
                     <button className="group relative px-10 py-4 bg-transparent border-2 border-[#c99e66] text-[#c99e66] font-semibold rounded-xl hover:bg-[#c99e66] hover:text-white transition-all duration-300 overflow-hidden">
-                        <span className="relative z-10">View All Categories</span>
+                        <Link to='/all-articles'>
+                            <span className="relative z-10">View All Categories</span>
+                        </Link>
                         <div className="absolute inset-0 bg-[#c99e66] transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
                     </button>
                 </div>
