@@ -26,8 +26,8 @@ const Home = () => {
             <HeroSection></HeroSection>
             <TrendingArticles></TrendingArticles>
             <PublisherSection></PublisherSection>
-            <SubscriptionSection></SubscriptionSection>
             <StatisticsSection></StatisticsSection>
+            <SubscriptionSection></SubscriptionSection>
             <FeaturedCategoriesSection></FeaturedCategoriesSection>
             <WhyChooseUs></WhyChooseUs>
             <SubscriptionModal show={showModal} onClose={() => setShowModal(false)}>
