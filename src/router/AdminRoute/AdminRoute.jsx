@@ -24,7 +24,7 @@ const AdminRoute = ({ children }) => {
                 setUserRole(res.data.role);
             } catch (err) {
                 console.error("Error fetching user role:", err);
-                setUserRole('user'); // fallback
+                setUserRole('user');
             } finally {
                 setCheckingRole(false);
             }

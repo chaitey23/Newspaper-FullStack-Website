@@ -229,13 +229,13 @@ const TrendingArticles = () => {
     };
 
     return (
-        <section className="py-16 bg-white">
+        <section className="py-16 bg-base-100">
             <div className="container mx-auto px-4">
                 {/* Section Header */}
                 <div className="text-center mb-12">
-                    <h2 className="text-3xl font-serif font-bold text-gray-900 mb-4">Trending Now</h2>
+                    <h2 className="text-3xl font-serif font-bold text-base-content mb-4">Trending Now</h2>
                     <div className="w-20 h-1 bg-gradient-to-r from-[#c99e66] to-[#b08d5a] mx-auto"></div>
-                    <p className="text-gray-600 mt-4 max-w-2xl mx-auto">
+                    <p className="text-base-content mt-4 max-w-2xl mx-auto">
                         Discover the most viewed and popular articles in our community
                     </p>
                 </div>

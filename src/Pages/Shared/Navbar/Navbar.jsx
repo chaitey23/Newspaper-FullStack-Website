@@ -1,11 +1,14 @@
 import React, { useContext, useState } from 'react';
 import { AuthContext } from '../../../Context/AuthContext/AuthContext';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { FaUser, FaFileAlt, FaCrown, FaCreditCard, FaSignOutAlt, FaChartBar } from 'react-icons/fa';
 
 const Navbar = () => {
     const { user, signOutUser, loading } = useContext(AuthContext);
     const [showLogoutModal, setShowLogoutModal] = useState(false);
     console.log("User object:", user);
+
+
 
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const navigate = useNavigate();
@@ -135,11 +138,12 @@ const Navbar = () => {
 
     return (
         <>
-            <div className="navbar bg-white shadow-md sticky top-0 z-50 px-4 md:px-8 py-3">
+            <div className="navbar bg-white shadow-md sticky top-0 z-50 px-4 md:px-8 py-3 border-b-2 border-[#c99e66]">
                 <div className="navbar-start">
                     <div className="dropdown">
                         <div
                             tabIndex={0}
+                            aria-label="Toggle menu"
                             role="button"
                             className="btn btn-ghost lg:hidden"
                             onClick={toggleMenu}
@@ -190,6 +194,7 @@ const Navbar = () => {
                 </div>
 
                 <div className="navbar-end">
+
                     {!user ? (
                         <>
                             <div className="flex md:hidden">
@@ -207,6 +212,7 @@ const Navbar = () => {
                                 >
                                     Register
                                 </NavLink>
+
                             </div>
 
                             <div className="hidden md:flex gap-4">
@@ -228,54 +234,88 @@ const Navbar = () => {
                         </>
                     ) : (
                         <div className="dropdown dropdown-end">
-                            <div tabIndex={0} className="btn btn-ghost btn-circle avatar">
+                            <div tabIndex={0} className="avatar">
                                 <Link to="/profile">
-                                    <div className="w-10 h-10 rounded-full overflow-hidden bg-[#c99e66] flex items-center justify-center border-2 border-transparent hover:border-[#c99e66] transition-colors">
-                                        {user.photoURL ? (
-                                            <img
-                                                src={user.photoURL}
-                                                alt={user.displayName || "User"}
-                                                referrerPolicy="no-referrer"
-                                                className="w-full h-full object-cover"
-                                            />
-                                        ) : (
-                                            <span className="text-white font-semibold text-lg">
-                                                {user.displayName ? user.displayName.charAt(0).toUpperCase() : user.email?.charAt(0).toUpperCase()}
+                                    <div className='flex items-center gap-3'>
+                                        <div className="w-12 h-12 rounded-full overflow-hidden bg-gradient-to-br from-[#c99e66] to-[#b88d54] flex items-center justify-center shadow-md">
+                                            {user.photoURL ? (
+                                                <img
+                                                    src={user.photoURL}
+                                                    alt={user.displayName || "User"}
+                                                    referrerPolicy="no-referrer"
+                                                    className="w-full h-full object-cover"
+                                                />
+                                            ) : (
+                                                <span className="text-white font-bold text-xl">
+                                                    {user.displayName ? user.displayName.charAt(0).toUpperCase() : user.email?.charAt(0).toUpperCase()}
+                                                </span>
+                                            )}
+                                        </div>
+                                        {user.displayName && (
+                                            <span className="hidden md:inline text-gray-900 font-semibold text-lg tracking-wide bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
+                                                {user.displayName}
                                             </span>
                                         )}
                                     </div>
                                 </Link>
                             </div>
-                            <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52">
-                                <li className="px-4 py-2 border-b border-gray-100">
-                                    <div className="font-medium text-gray-800">{user.displayName || "User"}</div>
-                                    <div className="text-sm text-gray-500">{user.email}</div>
+                            <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52 border border-gray-200">
+                                <li className="px-4 py-3 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
+                                    <div className="font-semibold text-gray-900">{user.displayName || "User"}</div>
+                                    <div className="text-sm text-gray-600 mt-1">{user.email}</div>
                                 </li>
                                 <li>
-                                    <Link to="/profile" className="justify-between">
-                                        My Profile
+                                    <Link to="/profile" className="justify-between py-3 text-gray-700 hover:text-[#c99e66] hover:bg-gray-50 transition-colors">
+                                        <span className="flex items-center gap-2">
+                                            <FaUser className="w-4 h-4" />
+                                            My Profile
+                                        </span>
                                     </Link>
                                 </li>
-                                <li>
-                                    <Link to="/my-articles">My Articles</Link>
-                                </li>
-                                {user.premiumTaken && (
+                                {user.role === "admin" && (
                                     <li>
-                                        <Link to="/premium-articles">Premium Articles</Link>
+                                        <Link to="/dashboard" className="py-3 text-gray-700 hover:text-[#c99e66] hover:bg-gray-50 transition-colors">
+                                            <span className="flex items-center gap-2">
+                                                <FaChartBar className="w-4 h-4" />
+                                                Dashboard
+                                            </span>
+                                        </Link>
                                     </li>
                                 )}
                                 <li>
-                                    <Link to="/subscription">
-                                        Subscription
+                                    <Link to="/my-articles" className="py-3 text-gray-700 hover:text-[#c99e66] hover:bg-gray-50 transition-colors">
+                                        <span className="flex items-center gap-2">
+                                            <FaFileAlt className="w-4 h-4" />
+                                            My Articles
+                                        </span>
+                                    </Link>
+                                </li>
+                                {user.premiumTaken && (
+                                    <li>
+                                        <Link to="/premium-articles" className="py-3 text-gray-700 hover:text-[#c99e66] hover:bg-gray-50 transition-colors">
+                                            <span className="flex items-center gap-2">
+                                                <FaCrown className="w-4 h-4" />
+                                                Premium Articles
+                                            </span>
+                                        </Link>
+                                    </li>
+                                )}
+                                <li>
+                                    <Link to="/subscription" className="py-3 text-gray-700 hover:text-[#c99e66] hover:bg-gray-50 transition-colors justify-between">
+                                        <span className="flex items-center gap-2">
+                                            <FaCreditCard className="w-4 h-4" />
+                                            Subscription
+                                        </span>
                                         {user.premiumTaken
                                             ? <span className="badge badge-success badge-sm ml-2">Active</span>
-                                            : <span className="badge badge-warning badge-sm ml-2">Upgrade</span>
+                                            : <span className="badge badge-warning badge-sm ml-2 bg-[#c99e66] border-[#c99e66] text-white">Upgrade</span>
                                         }
                                     </Link>
                                 </li>
-                                <li><hr className="my-1" /></li>
+                                <li><hr className="my-1 border-gray-200" /></li>
                                 <li>
-                                    <button onClick={openLogoutModal} className="text-red-600 hover:text-red-800 font-medium">
+                                    <button onClick={openLogoutModal} className="py-3 text-red-600 hover:text-red-800 font-medium hover:bg-red-50 transition-colors flex items-center gap-2">
+                                        <FaSignOutAlt className="w-4 h-4" />
                                         Sign Out
                                     </button>
                                 </li>
