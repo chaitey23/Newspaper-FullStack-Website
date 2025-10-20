@@ -103,19 +103,8 @@ const DashBoardLayout = () => {
                                     <span>Add Publisher</span>
                                 </NavLink>
                             </li>
-                            <li></li>
-                            <li>
-                                <a className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-700 hover:text-white transition-all duration-200 text-sm font-medium">
-                                    <FaChartBar className="text-base" />
-                                    <span>Analytics</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-700 hover:text-white transition-all duration-200 text-sm font-medium">
-                                    <FaCog className="text-base" />
-                                    <span>Settings</span>
-                                </a>
-                            </li>
+
+
                         </ul>
                     </nav>
 

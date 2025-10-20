@@ -133,8 +133,9 @@ const DashBoardAllArticles = () => {
 
     // Make Premium / Remove Premium function
     const handleTogglePremium = async (articleId, currentPremiumStatus, articleTitle) => {
+        const action = currentPremiumStatus ? 'remove from premium' : 'make premium';
         try {
-            const action = currentPremiumStatus ? 'remove from premium' : 'make premium';
+
             const result = await Swal.fire({
                 title: `${currentPremiumStatus ? 'Remove from Premium?' : 'Make Article Premium?'}`,
                 text: `Do you want to ${action} "${articleTitle}"?`,
