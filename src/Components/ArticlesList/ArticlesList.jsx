@@ -11,6 +11,8 @@ const ArticlesList = () => {
     const [selectedPublisher, setSelectedPublisher] = useState('');
     const [selectedTags, setSelectedTags] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
+    const [sortBy, setSortBy] = useState('newest'); // Default sort by newest
+    const [sortOrder, setSortOrder] = useState('desc'); // Default descending
 
     const { user } = useContext(AuthContext);
     const queryClient = useQueryClient();
@@ -37,6 +39,45 @@ const ArticlesList = () => {
         isLoading: tagsLoading
     } = useTags();
 
+    // Sort articles based on selected criteria
+    const sortedArticles = React.useMemo(() => {
+        if (!articles.length) return [];
+
+        const sorted = [...articles].sort((a, b) => {
+            let aValue, bValue;
+
+            switch (sortBy) {
+                case 'date':
+                    aValue = new Date(a.publishedDate || a.createdAt);
+                    bValue = new Date(b.publishedDate || b.createdAt);
+                    break;
+                case 'title':
+                    aValue = a.title.toLowerCase();
+                    bValue = b.title.toLowerCase();
+                    break;
+                case 'views':
+                    aValue = a.views || 0;
+                    bValue = b.views || 0;
+                    break;
+                case 'publisher':
+                    aValue = a.publisher.toLowerCase();
+                    bValue = b.publisher.toLowerCase();
+                    break;
+                default:
+                    aValue = new Date(a.publishedDate || a.createdAt);
+                    bValue = new Date(b.publishedDate || b.createdAt);
+            }
+
+            if (sortOrder === 'asc') {
+                return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
+            } else {
+                return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
+            }
+        });
+
+        return sorted;
+    }, [articles, sortBy, sortOrder]);
+
     const handleTagToggle = (tag) => {
         if (selectedTags.includes(tag)) {
             setSelectedTags(selectedTags.filter(t => t !== tag));
@@ -49,6 +90,24 @@ const ArticlesList = () => {
         setSelectedPublisher('');
         setSelectedTags([]);
         setSearchTerm('');
+        setSortBy('newest');
+        setSortOrder('desc');
+    };
+
+    const handleSortChange = (newSortBy) => {
+        if (sortBy === newSortBy) {
+            // Toggle sort order if same sort field is clicked
+            setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+        } else {
+            // Set new sort field with default descending order
+            setSortBy(newSortBy);
+            setSortOrder('desc');
+        }
+    };
+
+    const getSortIcon = (field) => {
+        if (sortBy !== field) return '↕️';
+        return sortOrder === 'asc' ? '↑' : '↓';
     };
 
     const isLoading = articlesLoading || publishersLoading || tagsLoading;
@@ -185,9 +244,9 @@ const ArticlesList = () => {
                     animate="visible"
                     className="bg-white p-6 rounded-2xl shadow-lg mb-8 border border-gray-100"
                 >
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                         {/* Search Input */}
-                        <motion.div variants={filterVariants}>
+                        <motion.div variants={filterVariants} className="lg:col-span-2">
                             <label className="block text-sm font-semibold text-gray-700 mb-2">
                                 🔍 Search by Title
                             </label>
@@ -220,45 +279,94 @@ const ArticlesList = () => {
                             </select>
                         </motion.div>
 
+                        {/* Sort Options */}
+                        <motion.div variants={filterVariants}>
+                            <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                🔄 Sort Articles
+                            </label>
+                            <div className="flex gap-2">
+                                <select
+                                    value={sortBy}
+                                    onChange={(e) => setSortBy(e.target.value)}
+                                    className="flex-1 p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#c99e66] focus:border-[#c99e66] transition-all duration-300 cursor-pointer"
+                                >
+                                    <option value="date">Date</option>
+                                    <option value="title">Title</option>
+                                    <option value="views">Views</option>
+                                    <option value="publisher">Publisher</option>
+                                </select>
+                                <button
+                                    onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+                                    className="px-4 bg-gradient-to-r from-[#c99e66] to-[#b08d5a] text-white rounded-xl hover:from-[#b08d5a] hover:to-[#9c7c4e] transition-all duration-300 font-semibold cursor-pointer flex items-center justify-center min-w-[60px]"
+                                    title={sortOrder === 'asc' ? 'Ascending' : 'Descending'}
+                                >
+                                    {sortOrder === 'asc' ? '↑' : '↓'}
+                                </button>
+                            </div>
+                        </motion.div>
+                    </div>
+
+                    {/* Tags Filter and Clear Button Row */}
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+                        {/* Tags Filter */}
+                        <motion.div variants={filterVariants}>
+                            <label className="block text-sm font-semibold text-gray-700 mb-3">
+                                🏷️ Filter by Tags
+                            </label>
+                            <div className="flex flex-wrap gap-2">
+                                {tagsLoading ? (
+                                    <div className="flex space-x-2">
+                                        {[...Array(5)].map((_, i) => (
+                                            <div key={i} className="h-8 w-20 bg-gray-200 rounded-full animate-pulse"></div>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    tags.map((tag, index) => (
+                                        <motion.button
+                                            key={index}
+                                            whileHover={{ scale: 1.05 }}
+                                            whileTap={{ scale: 0.95 }}
+                                            onClick={() => handleTagToggle(tag)}
+                                            className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 transform ${selectedTags.includes(tag)
+                                                ? 'bg-gradient-to-r from-[#c99e66] to-[#b08d5a] text-white shadow-lg'
+                                                : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:shadow-md'
+                                                }`}
+                                        >
+                                            {tag}
+                                        </motion.button>
+                                    ))
+                                )}
+                            </div>
+                        </motion.div>
+
                         {/* Clear Filters Button */}
-                        <motion.div variants={filterVariants} className="flex items-end">
+                        <motion.div variants={filterVariants} className="flex items-end justify-end">
                             <button
                                 onClick={clearFilters}
-                                className="w-full bg-gradient-to-r from-[#c99e66] to-[#b08d5a] text-white py-3 px-4 rounded-xl hover:from-[#b08d5a] hover:to-[#9c7c4e] transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-xl font-semibold cursor-pointer"
+                                className="w-full lg:w-auto bg-gradient-to-r from-gray-500 to-gray-600 text-white py-3 px-6 rounded-xl hover:from-gray-600 hover:to-gray-700 transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-xl font-semibold cursor-pointer flex items-center justify-center"
                             >
-                                🗑️ Clear Filters
+                                🗑️ Clear All Filters
                             </button>
                         </motion.div>
                     </div>
 
-                    {/* Tags Filter */}
-                    <motion.div variants={filterVariants} className="mt-6">
-                        <label className="block text-sm font-semibold text-gray-700 mb-3">
-                            🏷️ Filter by Tags
-                        </label>
-                        <div className="flex flex-wrap gap-2">
-                            {tagsLoading ? (
-                                <div className="flex space-x-2">
-                                    {[...Array(5)].map((_, i) => (
-                                        <div key={i} className="h-8 w-20 bg-gray-200 rounded-full animate-pulse"></div>
-                                    ))}
-                                </div>
-                            ) : (
-                                tags.map((tag, index) => (
-                                    <motion.button
-                                        key={index}
-                                        whileHover={{ scale: 1.05 }}
-                                        whileTap={{ scale: 0.95 }}
-                                        onClick={() => handleTagToggle(tag)}
-                                        className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 transform ${selectedTags.includes(tag)
-                                            ? 'bg-gradient-to-r from-[#c99e66] to-[#b08d5a] text-white shadow-lg'
-                                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:shadow-md'
-                                            }`}
-                                    >
-                                        {tag}
-                                    </motion.button>
-                                ))
-                            )}
+                    {/* Current Sort Info */}
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        className="mt-4 p-3 bg-gray-50 rounded-lg border border-gray-200"
+                    >
+                        <div className="flex flex-wrap items-center gap-2 text-sm text-gray-600">
+                            <span className="font-semibold">Current Sort:</span>
+                            <span className="bg-white px-3 py-1 rounded-full border border-gray-300">
+                                {sortBy === 'date' && '📅 Date'}
+                                {sortBy === 'title' && '📝 Title'}
+                                {sortBy === 'views' && '👁️ Views'}
+                                {sortBy === 'publisher' && '📰 Publisher'}
+                                <span className="ml-2 font-bold">
+                                    ({sortOrder === 'asc' ? 'Ascending ↑' : 'Descending ↓'})
+                                </span>
+                            </span>
                         </div>
                     </motion.div>
                 </motion.div>
@@ -271,7 +379,7 @@ const ArticlesList = () => {
                     className="mb-6"
                 >
                     <p className="text-gray-600 font-medium">
-                        📊 Found <span className="text-[#c99e66] font-bold">{articles.length}</span> articles
+                        📊 Found <span className="text-[#c99e66] font-bold">{sortedArticles.length}</span> articles
                         {selectedPublisher && ` from ${selectedPublisher}`}
                         {selectedTags.length > 0 && ` with ${selectedTags.length} tags`}
                     </p>
@@ -279,7 +387,7 @@ const ArticlesList = () => {
 
                 {/* Articles Grid */}
                 <AnimatePresence mode="wait">
-                    {articles.length === 0 ? (
+                    {sortedArticles.length === 0 ? (
                         <motion.div
                             initial={{ opacity: 0, scale: 0.9 }}
                             animate={{ opacity: 1, scale: 1 }}
@@ -305,7 +413,7 @@ const ArticlesList = () => {
                             animate="visible"
                             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
                         >
-                            {articles.map((article) => (
+                            {sortedArticles.map((article) => (
                                 <motion.div
                                     key={article._id}
                                     variants={itemVariants}
@@ -381,6 +489,11 @@ const ArticlesList = () => {
                                                 <span className="flex items-center">
                                                     👁️ {article.views} views
                                                 </span>
+                                                {article.publishedDate && (
+                                                    <span className="text-xs">
+                                                        {new Date(article.publishedDate).toLocaleDateString()}
+                                                    </span>
+                                                )}
                                             </div>
 
                                             <Link
