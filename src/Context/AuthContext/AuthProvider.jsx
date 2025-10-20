@@ -12,8 +12,6 @@ const AuthProvider = ({ children }) => {
         try {
             const result = await createUserWithEmailAndPassword(auth, email, password);
             console.log('User created in Firebase:', result.user);
-
-            // Update Firebase user profile with name and photoURL
             if (userInfo.displayName || userInfo.photoURL) {
                 console.log('Updating profile with:', userInfo);
                 await updateProfile(result.user, {
@@ -106,6 +104,7 @@ const AuthProvider = ({ children }) => {
 
     const authInfo = {
         loading,
+        setLoading,
         user,
         createUser,
         signInUser,

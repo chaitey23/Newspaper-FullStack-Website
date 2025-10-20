@@ -1,110 +1,10 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { FaFacebookF, FaTwitter, FaInstagram, FaYoutube } from 'react-icons/fa';
 
-// GSAP ScrollTrigger plugin register kora
-if (typeof window !== 'undefined') {
-    gsap.registerPlugin(ScrollTrigger);
-}
-
 const Footer = () => {
-    const footerRef = useRef(null);
-    const quickLinksRef = useRef(null);
-    const categoriesRef = useRef(null);
-    const newsletterRef = useRef(null);
-
-    useEffect(() => {
-        // Footer animation - bottom theke upore asha
-        gsap.fromTo(footerRef.current,
-            { y: 100, opacity: 0 },
-            {
-                y: 0,
-                opacity: 1,
-                duration: 1,
-                ease: "power3.out",
-                scrollTrigger: {
-                    trigger: footerRef.current,
-                    start: "top 90%",
-                    toggleActions: "play none none reverse"
-                }
-            }
-        );
-
-        // Quick Links animation - left theke asha
-        gsap.fromTo(quickLinksRef.current,
-            { x: -50, opacity: 0 },
-            {
-                x: 0,
-                opacity: 1,
-                duration: 0.8,
-                delay: 0.3,
-                ease: "back.out(1.7)",
-                scrollTrigger: {
-                    trigger: quickLinksRef.current,
-                    start: "top 85%",
-                    toggleActions: "play none none reverse"
-                }
-            }
-        );
-
-        // Categories animation - right theke asha
-        gsap.fromTo(categoriesRef.current,
-            { x: 50, opacity: 0 },
-            {
-                x: 0,
-                opacity: 1,
-                duration: 0.8,
-                delay: 0.5,
-                ease: "back.out(1.7)",
-                scrollTrigger: {
-                    trigger: categoriesRef.current,
-                    start: "top 85%",
-                    toggleActions: "play none none reverse"
-                }
-            }
-        );
-
-        // Newsletter animation - scale diye asha
-        gsap.fromTo(newsletterRef.current,
-            { scale: 0.8, opacity: 0 },
-            {
-                scale: 1,
-                opacity: 1,
-                duration: 0.8,
-                delay: 0.7,
-                ease: "elastic.out(1, 0.8)",
-                scrollTrigger: {
-                    trigger: newsletterRef.current,
-                    start: "top 85%",
-                    toggleActions: "play none none reverse"
-                }
-            }
-        );
-
-        // Social icons animation - stagger effect
-        gsap.fromTo(".social-icon",
-            { y: 20, opacity: 0 },
-            {
-                y: 0,
-                opacity: 1,
-                duration: 0.5,
-                stagger: 0.1,
-                delay: 1,
-                ease: "back.out(1.7)",
-                scrollTrigger: {
-                    trigger: ".social-icons-container",
-                    start: "top 85%",
-                    toggleActions: "play none none reverse"
-                }
-            }
-        );
-
-    }, []);
-
     return (
-        <footer className="bg-gray-900 text-white mt-16" ref={footerRef}>
+        <footer className="bg-gray-900 text-white mt-16">
             {/* Main Footer Content */}
             <div className="container mx-auto px-4 py-16">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
@@ -116,28 +16,28 @@ const Footer = () => {
                         <p className="text-gray-400 mb-6 leading-relaxed">
                             Your trusted source for the latest news, insights, and stories from around the world. Delivering truth with integrity.
                         </p>
-                        <div className="flex space-x-5 social-icons-container">
+                        <div className="flex space-x-5">
                             <a href="https://www.facebook.com/chaetey001"
                                 target='_blank'
-                                className="text-gray-400 hover:text-[#c99e66] transition-colors duration-300 social-icon">
+                                rel="noopener noreferrer"
+                                className="text-gray-400 hover:text-[#c99e66] transition-colors duration-300">
                                 <FaFacebookF className="w-5 h-5" />
                             </a>
-                            <a href="#" className="text-gray-400 hover:text-[#c99e66] transition-colors duration-300 social-icon">
+                            <a href="#" className="text-gray-400 hover:text-[#c99e66] transition-colors duration-300">
                                 <FaTwitter className="w-5 h-5" />
                             </a>
                             <a href="#"
-                                target=''
-                                className="text-gray-400 hover:text-[#c99e66] transition-colors duration-300 social-icon">
+                                className="text-gray-400 hover:text-[#c99e66] transition-colors duration-300">
                                 <FaInstagram className="w-5 h-5" />
                             </a>
-                            <a href="#" className="text-gray-400 hover:text-[#c99e66] transition-colors duration-300 social-icon">
+                            <a href="#" className="text-gray-400 hover:text-[#c99e66] transition-colors duration-300">
                                 <FaYoutube className="w-5 h-5" />
                             </a>
                         </div>
                     </div>
 
                     {/* Quick Links */}
-                    <div ref={quickLinksRef}>
+                    <div>
                         <h3 className="text-lg font-semibold mb-6 text-[#c99e66]">Quick Links</h3>
                         <ul className="space-y-3">
                             <li>
@@ -159,19 +59,19 @@ const Footer = () => {
                     </div>
 
                     {/* Categories */}
-                    <div ref={categoriesRef}>
+                    <div>
                         <h3 className="text-lg font-semibold mb-6 text-[#c99e66]">News Categories</h3>
                         <ul className="space-y-3">
-                            <li><a href="#" className="text-gray-400 hover:text-[#c99e66] transition-colors duration-300 block py-1">Politics</a></li>
-                            <li><a href="#" className="text-gray-400 hover:text-[#c99e66] transition-colors duration-300 block py-1">Technology</a></li>
-                            <li><a href="#" className="text-gray-400 hover:text-[#c99e66] transition-colors duration-300 block py-1">Business</a></li>
-                            <li><a href="#" className="text-gray-400 hover:text-[#c99e66] transition-colors duration-300 block py-1">Health</a></li>
-                            <li><a href="#" className="text-gray-400 hover:text-[#c99e66] transition-colors duration-300 block py-1">Entertainment</a></li>
+                            <li><Link to="/category/politics" className="text-gray-400 hover:text-[#c99e66] transition-colors duration-300 block py-1">Politics</Link></li>
+                            <li><Link to="/category/technology" className="text-gray-400 hover:text-[#c99e66] transition-colors duration-300 block py-1">Technology</Link></li>
+                            <li><Link to="/category/business" className="text-gray-400 hover:text-[#c99e66] transition-colors duration-300 block py-1">Business</Link></li>
+                            <li><Link to="/category/health" className="text-gray-400 hover:text-[#c99e66] transition-colors duration-300 block py-1">Health</Link></li>
+                            <li><Link to="/category/entertainment" className="text-gray-400 hover:text-[#c99e66] transition-colors duration-300 block py-1">Entertainment</Link></li>
                         </ul>
                     </div>
 
                     {/* Newsletter Subscription */}
-                    <div ref={newsletterRef}>
+                    <div>
                         <h3 className="text-lg font-semibold mb-6 text-[#c99e66]">Newsletter</h3>
                         <p className="text-gray-400 mb-6 leading-relaxed">Subscribe to our newsletter for daily news updates</p>
                         <form className="flex flex-col space-y-4">

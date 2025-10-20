@@ -8,7 +8,7 @@ import axios from 'axios';
 import { FaUpload, FaSpinner, FaTimes } from 'react-icons/fa';
 
 const Register = () => {
-    const { createUser, loading, user } = useContext(AuthContext)
+    const { createUser, loading, setLoading, user } = useContext(AuthContext)
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [imageUploading, setImageUploading] = useState(false);
@@ -91,36 +91,14 @@ const Register = () => {
     const removeImage = () => {
         setPreviewImage("");
         setValue('photoURL', "");
-        // Clear the file input
+
         const fileInput = document.getElementById('profileImage');
         if (fileInput) fileInput.value = "";
     };
 
-    // const onSubmit = async (data) => {
-    //     try {
-    //         const result = await createUser(data.email, data.password)
-
-    //         toast.success('Registration successful! Welcome to NewsPortal.');
-    //         reset()
-    //         setPreviewImage(""); // Clear preview on success
-    //         console.log('Registered user:', result.user);
-
-    //         const userData = {
-    //             uid: result.user.uid,
-    //             name: data.name,
-    //             email: result.user.email,
-    //             photoURL: data.photoURL || '' // Use the uploaded photo URL
-    //         };
-
-    //         await axios.post(`${import.meta.env.VITE_BASE_URL}/users`, userData)
-    //     } catch (error) {
-    //         toast.error('Registration failed. Please try again.');
-    //         console.log(error);
-    //     }
-    // };
     const onSubmit = async (data) => {
         try {
-            // Pass user info to createUser function
+
             const result = await createUser(data.email, data.password, {
                 displayName: data.name,
                 photoURL: data.photoURL
@@ -146,6 +124,7 @@ const Register = () => {
         } catch (error) {
             toast.error('Registration failed. Please try again.');
             console.log(error);
+            setLoading(false)
         }
     };
     return (

@@ -6,7 +6,7 @@ import UsePageTitle from '../../hooks/UsePageTitle/UsePageTitle';
 
 const SocialLogin = () => {
     UsePageTitle("SocialLogin")
-    const { googleSignIn } = useContext(AuthContext);
+    const { googleSignIn, setLoading } = useContext(AuthContext);
     const handleGoogleLogin = () => {
         googleSignIn()
             .then(async (result) => {
@@ -29,6 +29,7 @@ const SocialLogin = () => {
             .catch(error => {
                 console.error(error);
                 toast.error("Google Login Failed");
+                setLoading(false)
             });
     };
     return (
