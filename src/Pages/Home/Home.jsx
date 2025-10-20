@@ -8,6 +8,7 @@ import FeaturedCategoriesSection from '../../Components/FeaturedCategoriesSectio
 import WhyChooseUs from '../../Components/WhyChooseUs/WhyChooseUs';
 import SubscriptionModal from '../../Components/SubscriptionModal/SubcriptionModal';
 import HeroSection from '../../Components/HeroSection/HeroSection';
+import LatestArticles from '../../Components/LatestArticles/LatestArticles';
 
 
 const Home = () => {
@@ -24,6 +25,7 @@ const Home = () => {
     return (
         <>
             <HeroSection></HeroSection>
+            <LatestArticles></LatestArticles>
             <TrendingArticles></TrendingArticles>
             <PublisherSection></PublisherSection>
             <StatisticsSection></StatisticsSection>

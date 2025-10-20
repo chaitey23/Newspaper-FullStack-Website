@@ -1,6 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 const WhyChooseUs = () => {
+    const [email, setEmail] = useState('');
+    const [isSubscribed, setIsSubscribed] = useState(false);
+
     const features = [
         {
             id: 1,
@@ -55,6 +58,21 @@ const WhyChooseUs = () => {
             avatar: "👩‍🏫"
         }
     ];
+
+    const handleNewsletterSubmit = (e) => {
+        e.preventDefault();
+        // Handle newsletter subscription logic here
+        console.log('Newsletter subscription:', email);
+
+        // Show success message
+        setIsSubscribed(true);
+        setEmail('');
+
+        // Reset after 3 seconds
+        setTimeout(() => {
+            setIsSubscribed(false);
+        }, 3000);
+    };
 
     return (
         <section className="py-20 bg-gradient-to-br from-gray-50 to-white mt-16">
@@ -128,27 +146,62 @@ const WhyChooseUs = () => {
                     </div>
                 </div>
 
-                {/* CTA Banner - Updated with your brand colors */}
+                {/* ✅ UPDATED: Newsletter Section - Replaced CTA */}
                 <div className="bg-gradient-to-br from-[#c99e66] via-[#b08d5a] to-[#9c7c4e] rounded-3xl p-12 text-center text-white shadow-2xl relative overflow-hidden">
                     {/* Subtle pattern overlay */}
                     <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_1px_1px,_white_1px,_transparent_0)] bg-[length:20px_20px]"></div>
 
                     <div className="relative z-10">
-                        <h3 className="text-3xl font-bold mb-6">Ready to Dive In?</h3>
-                        <p className="text-white/90 text-xl mb-8 max-w-2xl mx-auto leading-relaxed">
-                            Join our community of informed readers and never miss out on important updates and insights.
+                        <h3 className="text-3xl font-bold mb-4">Stay Informed with Our Newsletter</h3>
+                        <p className="text-white/90 text-lg mb-8 max-w-2xl mx-auto leading-relaxed">
+                            Get weekly updates, exclusive content, and early access to premium articles delivered to your inbox.
                         </p>
-                        <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
-                            <button className="px-8 py-4 bg-white text-[#c99e66] font-bold rounded-xl hover:bg-gray-100 transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-xl text-lg">
-                                Create Free Account
-                            </button>
-                            <button className="px-8 py-4 border-2 border-white text-white font-bold rounded-xl hover:bg-white hover:text-[#c99e66] transition-all duration-300 transform hover:-translate-y-1 text-lg">
-                                Learn More
-                            </button>
+
+                        {isSubscribed ? (
+                            <div className="bg-white/20 backdrop-blur-sm rounded-xl p-6 max-w-md mx-auto">
+                                <div className="text-2xl mb-2">🎉</div>
+                                <h4 className="text-xl font-bold mb-2">Welcome to our community!</h4>
+                                <p className="text-white/90">Thank you for subscribing to our newsletter.</p>
+                            </div>
+                        ) : (
+                            <form onSubmit={handleNewsletterSubmit} className="max-w-md mx-auto">
+                                <div className="flex flex-col sm:flex-row gap-4 mb-4">
+                                    <input
+                                        type="email"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        placeholder="Enter your email address"
+                                        className="flex-1 px-4 py-3 rounded-lg border border-white/30 bg-white/10 backdrop-blur-sm text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white focus:border-transparent"
+                                        required
+                                    />
+                                    <button
+                                        type="submit"
+                                        className="bg-white text-[#c99e66] px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors duration-300 whitespace-nowrap"
+                                    >
+                                        Subscribe Now
+                                    </button>
+                                </div>
+                                <p className="text-white/80 text-sm">
+                                    No spam, unsubscribe anytime. Join 10,000+ readers already subscribed.
+                                </p>
+                            </form>
+                        )}
+
+                        {/* Trust indicators */}
+                        <div className="mt-8 flex flex-wrap justify-center gap-6 text-white/80 text-sm">
+                            <div className="flex items-center gap-2">
+                                <div className="w-2 h-2 bg-white rounded-full"></div>
+                                <span>Weekly digest</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <div className="w-2 h-2 bg-white rounded-full"></div>
+                                <span>Exclusive content</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <div className="w-2 h-2 bg-white rounded-full"></div>
+                                <span>No spam, ever</span>
+                            </div>
                         </div>
-                        <p className="text-white/80 mt-6 text-sm">
-                            No credit card required • Start reading in seconds
-                        </p>
                     </div>
                 </div>
             </div>
