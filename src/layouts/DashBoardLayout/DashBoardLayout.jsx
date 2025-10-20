@@ -135,8 +135,8 @@ const DashBoardLayout = () => {
                     {/* Main Content Area */}
                     <div className="drawer-content flex flex-col">
                         {/* Mobile Header */}
-                        <header className="lg:hidden bg-white shadow-sm border-b border-gray-200">
-                            <div className="navbar px-4">
+                        <header className="lg:hidden bg-white/95 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+                            <div className="navbar px-4 py-3">
                                 <div className="flex-1">
                                     <label htmlFor="my-drawer-2" className="btn btn-ghost btn-circle drawer-button">
                                         <FaBars className="text-lg text-gray-600" />
@@ -146,13 +146,13 @@ const DashBoardLayout = () => {
                                     </div>
                                 </div>
                                 <div className="flex-none">
-                                    <div className="w-8 h-8 bg-gradient-to-br from-[#c99e66] to-amber-600 rounded-full flex items-center justify-center">
+                                    <div className="w-8 h-8 bg-gradient-to-br from-[#c99e66] to-amber-600 rounded-full flex items-center justify-center shadow-md">
                                         <span className="text-white text-sm font-bold">A</span>
                                     </div>
                                 </div>
                             </div>
                         </header>
-                        <div className='hidden lg:block'>
+                        <div className='hidden lg:block sticky top-0 z-40'>
                             <Navbar></Navbar>
                         </div>
                         {/* Page Content */}
@@ -243,18 +243,7 @@ const DashBoardLayout = () => {
                                             <span>Add Publisher</span>
                                         </NavLink>
                                     </li>
-                                    <li>
-                                        <a className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-700 hover:text-white transition-all duration-200 text-sm font-medium">
-                                            <FaChartBar className="text-base" />
-                                            <span>Analytics</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-700 hover:text-white transition-all duration-200 text-sm font-medium">
-                                            <FaCog className="text-base" />
-                                            <span>Settings</span>
-                                        </a>
-                                    </li>
+
                                 </ul>
                             </nav>
 
