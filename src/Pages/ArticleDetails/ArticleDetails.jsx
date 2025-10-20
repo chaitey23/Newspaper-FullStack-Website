@@ -1,12 +1,11 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { useParams } from 'react-router';
+import { useParams, useNavigate } from 'react-router';
 import useAxiosSecure from '../../hooks/useAxiosSecure';
-
-
 
 const ArticleDetails = () => {
     const { id } = useParams();
+    const navigate = useNavigate();
     const axiosSecure = useAxiosSecure();
 
     const { data: article, isLoading, error } = useQuery({
@@ -17,6 +16,11 @@ const ArticleDetails = () => {
         },
         enabled: !!id,
     });
+
+    // Handle back to home
+    const handleBackToHome = () => {
+        navigate('/');
+    };
 
     if (isLoading) {
         return (
@@ -46,7 +50,25 @@ const ArticleDetails = () => {
 
     return (
         <div className="container mx-auto px-4 py-8 max-w-4xl">
+            {/* Back to Home Button */}
+            <div className="mb-6">
+                <button
+                    onClick={handleBackToHome}
+                    className="inline-flex items-center gap-2 px-4 py-2 border bg-gray-100  rounded-lg transition-colors duration-200 font-medium group hover:bg-[#c99e66] hover:text-white cursor-pointer"
+                >
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5 group-hover:-translate-x-1 transition-transform duration-200"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                    >
+                        <path fillRule="evenodd" d="M9.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L7.414 9H15a1 1 0 110 2H7.414l2.293 2.293a1 1 0 010 1.414z" clipRule="evenodd" />
+                    </svg>
+                    Back to Home
+                </button>
+            </div>
 
+            {/* Premium Badge */}
             {article.isPremium && (
                 <div className="bg-[#c99e66] text-white px-4 py-2 rounded-full inline-flex items-center mb-4">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
@@ -56,34 +78,43 @@ const ArticleDetails = () => {
                 </div>
             )}
 
-
+            {/* Article Header */}
             <div className="text-center mb-8">
-                <h1 className="text-4xl font-bold text-gray-800 mb-4">{article.title}</h1>
-                <div className="flex justify-center items-center space-x-4 text-gray-600">
-                    <span className="bg-gray-100 px-3 py-1 rounded-full">{article.publisher}</span>
-                    <span>{article.views} views</span>
+                <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4 leading-tight">
+                    {article.title}
+                </h1>
+                <div className="flex flex-col sm:flex-row justify-center items-center gap-3 text-gray-600">
+                    <span className="bg-gray-100 px-3 py-1 rounded-full text-sm">
+                        {article.publisher}
+                    </span>
+                    <span className="text-sm">{article.views} views</span>
+                    {article.publishedDate && (
+                        <span className="text-sm text-gray-500">
+                            {new Date(article.publishedDate).toLocaleDateString()}
+                        </span>
+                    )}
                 </div>
             </div>
 
-
+            {/* Article Image */}
             <img
                 src={article.image}
                 alt={article.title}
-                className="w-full h-96 object-cover rounded-lg mb-8"
+                className="w-full h-64 md:h-96 object-cover rounded-lg mb-8 shadow-md"
             />
 
-
+            {/* Article Content */}
             <div className="prose max-w-none">
-                <p className="text-lg text-gray-700 leading-relaxed mb-6">
+                <p className="text-lg text-gray-700 leading-relaxed mb-6 whitespace-pre-line">
                     {article.description}
                 </p>
 
-
+                {/* Article Tags */}
                 <div className="flex flex-wrap gap-2 mt-8">
                     {article.tags?.map((tag, index) => (
                         <span
                             key={index}
-                            className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm"
+                            className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-gray-200 transition-colors duration-200 cursor-default"
                         >
                             #{tag}
                         </span>
