@@ -11,18 +11,41 @@ const ArticlesList = () => {
     const [selectedPublisher, setSelectedPublisher] = useState('');
     const [selectedTags, setSelectedTags] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
-    const [sortBy, setSortBy] = useState('newest'); // Default sort by newest
-    const [sortOrder, setSortOrder] = useState('desc'); // Default descending
+    const [submittedSearch, setSubmittedSearch] = useState('');
+    const [isSearching, setIsSearching] = useState(false);
+    const [sortBy, setSortBy] = useState('newest');
+    const [sortOrder, setSortOrder] = useState('desc');
 
     const { user } = useContext(AuthContext);
     const queryClient = useQueryClient();
 
     const filters = {
-        search: searchTerm,
+        search: submittedSearch,
         publisher: selectedPublisher,
         tags: selectedTags
     };
+    const handleKeyPress = (e) => {
+        if (e.key === "Enter") {
+            handleSearchSubmit()
+        }
+    }
+    const handleSearchSubmit = () => {
+        if (searchTerm.trim() !== '') {
+            setIsSearching(true);
+            setSubmittedSearch(searchTerm);
+            // Small delay to show loading state
+            setTimeout(() => setIsSearching(false), 500);
+        }
+    };
 
+    const clearSearch = () => {
+        setSearchTerm('');
+        setSubmittedSearch('');
+        setIsSearching(true);
+        setTimeout(() => setIsSearching(false), 300)
+
+
+    };
     const {
         data: articles = [],
         isLoading: articlesLoading,
@@ -110,7 +133,7 @@ const ArticlesList = () => {
         return sortOrder === 'asc' ? '↑' : '↓';
     };
 
-    const isLoading = articlesLoading || publishersLoading || tagsLoading;
+    const isLoading = articlesLoading || publishersLoading || tagsLoading || isSearching;
     const error = articlesError;
 
     // Animation variants
@@ -250,13 +273,70 @@ const ArticlesList = () => {
                             <label className="block text-sm font-semibold text-gray-700 mb-2">
                                 🔍 Search by Title
                             </label>
-                            <input
-                                type="text"
-                                placeholder="What are you looking for?"
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                className="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#c99e66] focus:border-[#c99e66] transition-all duration-300"
-                            />
+                            <div className="relative">
+                                <input
+                                    type="text"
+                                    placeholder="Type and press Enter or click search..."
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                    onKeyPress={handleKeyPress}
+                                    className="w-full p-3 pl-4 pr-24 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#c99e66] focus:border-[#c99e66] transition-all duration-300"
+                                    disabled={isSearching}
+                                />
+
+                                {searchTerm && (
+                                    <button
+                                        onClick={clearSearch}
+                                        className="absolute right-16 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 p-2 transition-all duration-300"
+                                        title="Clear search"
+                                    >
+                                        ✕
+                                    </button>
+                                )}
+
+                                {/* Search Button */}
+                                <button
+                                    onClick={handleSearchSubmit}
+                                    disabled={isSearching || !searchTerm.trim()}
+                                    className={`absolute right-3 top-1/2 transform -translate-y-1/2 p-2 rounded-lg transition-all duration-300 cursor-pointer flex items-center gap-2 ${isSearching || !searchTerm.trim()
+                                        ? 'bg-gray-400 cursor-not-allowed'
+                                        : 'bg-gradient-to-r from-[#c99e66] to-[#b08d5a] hover:from-[#b08d5a] hover:to-[#9c7c4e]'
+                                        }`}
+                                >
+                                    {isSearching ? (
+                                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                                    ) : (
+                                        '🔍'
+                                    )}
+                                </button>
+                            </div>
+
+                            {/* Search Status */}
+                            {submittedSearch && !isSearching && (
+                                <motion.div
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    className="mt-2 text-sm text-gray-600"
+                                >
+                                    📊 Showing results for: <span className="font-semibold text-[#c99e66]">"{submittedSearch}"</span>
+                                    <button
+                                        onClick={clearSearch}
+                                        className="ml-2 text-red-500 hover:text-red-700 text-xs"
+                                    >
+                                        (Clear)
+                                    </button>
+                                </motion.div>
+                            )}
+
+                            {isSearching && (
+                                <motion.div
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    className="mt-2 text-sm text-gray-600"
+                                >
+                                    🔄 Updating results...
+                                </motion.div>
+                            )}
                         </motion.div>
 
                         {/* Publisher Filter */}
@@ -525,3 +605,8 @@ const ArticlesList = () => {
 };
 
 export default ArticlesList;
+
+
+
+
+

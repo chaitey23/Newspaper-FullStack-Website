@@ -233,11 +233,12 @@ const Navbar = () => {
                             </div>
                         </>
                     ) : (
+
                         <div className="dropdown dropdown-end">
                             <div tabIndex={0} className="avatar">
                                 <Link to="/profile">
                                     <div className='flex items-center gap-3'>
-                                        <div className="w-12 h-12 rounded-full overflow-hidden bg-gradient-to-br from-[#c99e66] to-[#b88d54] flex items-center justify-center shadow-md">
+                                        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden bg-gradient-to-br from-[#c99e66] to-[#b88d54] flex items-center justify-center shadow-md">
                                             {user.photoURL ? (
                                                 <img
                                                     src={user.photoURL}
@@ -246,25 +247,26 @@ const Navbar = () => {
                                                     className="w-full h-full object-cover"
                                                 />
                                             ) : (
-                                                <FaUserCircle className="w-6 h-6" />
+                                                <FaUserCircle className="w-6 h-6 sm:w-8 sm:h-8" />
                                             )}
                                         </div>
                                         {user.displayName && (
-                                            <div className="hidden md:flex items-center gap-1">
-                                                <span className="text-gray-900 font-semibold">{user.displayName}</span>
+                                            <div className="hidden md:flex items-center gap-1 truncate max-w-[120px] sm:max-w-[160px]">
+                                                <span className="text-gray-900 font-semibold truncate">{user.displayName}</span>
                                                 <FaChevronDown className="w-3 h-3 text-gray-600" />
                                             </div>
                                         )}
                                     </div>
                                 </Link>
                             </div>
-                            <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52 border border-gray-200">
+
+                            <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box  border border-gray-200">
                                 <li className="px-4 py-3 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
-                                    <div className="font-semibold text-gray-900">{user.displayName || "User"}</div>
-                                    <div className="text-sm text-gray-600 mt-1">{user.email}</div>
+                                    <div className="font-semibold text-gray-900 truncate">{user.displayName || "User"}</div>
+                                    <div className="text-sm text-gray-600 mt-1 truncate">{user.email}</div>
                                 </li>
                                 <li>
-                                    <Link to="/profile" className="justify-between py-3 text-gray-700 hover:text-[#c99e66] hover:bg-gray-50 transition-colors">
+                                    <Link to="/profile" className="flex justify-between py-3 text-gray-700 hover:text-[#c99e66] hover:bg-gray-50 transition-colors">
                                         <span className="flex items-center gap-2">
                                             <FaUser className="w-4 h-4" />
                                             My Profile
@@ -273,7 +275,7 @@ const Navbar = () => {
                                 </li>
                                 {user.role === "admin" && (
                                     <li>
-                                        <Link to="/dashboard" className="py-3 text-gray-700 hover:text-[#c99e66] hover:bg-gray-50 transition-colors">
+                                        <Link to="/dashboard" className="flex justify-between py-3 text-gray-700 hover:text-[#c99e66] hover:bg-gray-50 transition-colors">
                                             <span className="flex items-center gap-2">
                                                 <FaChartBar className="w-4 h-4" />
                                                 Dashboard
@@ -282,7 +284,7 @@ const Navbar = () => {
                                     </li>
                                 )}
                                 <li>
-                                    <Link to="/my-articles" className="py-3 text-gray-700 hover:text-[#c99e66] hover:bg-gray-50 transition-colors">
+                                    <Link to="/my-articles" className="flex justify-between py-3 text-gray-700 hover:text-[#c99e66] hover:bg-gray-50 transition-colors">
                                         <span className="flex items-center gap-2">
                                             <FaFileAlt className="w-4 h-4" />
                                             My Articles
@@ -291,7 +293,7 @@ const Navbar = () => {
                                 </li>
                                 {user.premiumTaken && (
                                     <li>
-                                        <Link to="/premium-articles" className="py-3 text-gray-700 hover:text-[#c99e66] hover:bg-gray-50 transition-colors">
+                                        <Link to="/premium-articles" className="flex justify-between py-3 text-gray-700 hover:text-[#c99e66] hover:bg-gray-50 transition-colors">
                                             <span className="flex items-center gap-2">
                                                 <FaCrown className="w-4 h-4" />
                                                 Premium Articles
@@ -300,7 +302,7 @@ const Navbar = () => {
                                     </li>
                                 )}
                                 <li>
-                                    <Link to="/subscription" className="py-3 text-gray-700 hover:text-[#c99e66] hover:bg-gray-50 transition-colors justify-between">
+                                    <Link to="/subscription" className="flex justify-between py-3 text-gray-700 hover:text-[#c99e66] hover:bg-gray-50 transition-colors">
                                         <span className="flex items-center gap-2">
                                             <FaCreditCard className="w-4 h-4" />
                                             Subscription
@@ -313,13 +315,14 @@ const Navbar = () => {
                                 </li>
                                 <li><hr className="my-1 border-gray-200" /></li>
                                 <li>
-                                    <button onClick={openLogoutModal} className="py-3 text-red-600 hover:text-red-800 font-medium hover:bg-red-50 transition-colors flex items-center gap-2">
+                                    <button onClick={openLogoutModal} className="flex justify-between items-center py-3 text-red-600 hover:text-red-800 font-medium hover:bg-red-50 transition-colors gap-2">
                                         <FaSignOutAlt className="w-4 h-4" />
                                         Sign Out
                                     </button>
                                 </li>
                             </ul>
                         </div>
+
                     )}
                 </div>
             </div>
