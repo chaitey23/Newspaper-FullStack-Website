@@ -21,6 +21,7 @@ import AdminRoute from "./AdminRoute/AdminRoute";
 import PublisherArticles from "../Pages/PublisherArticles/PublisherArticles";
 import PremiumArticles from "../Pages/PremiumArticles/PremiumArticles";
 import ErrorPage from "../Pages/ErrorPage/ErrorPage";
+import Payment from "../Pages/Subscription/Payment/Payment";
 
 
 export const router = createBrowserRouter([
@@ -55,6 +56,12 @@ export const router = createBrowserRouter([
             path: "/subscription",
             element: <PrivateRoute>
                 <Subscription></Subscription>
+            </PrivateRoute>
+        },
+        {
+            path: "/payment",
+            element: <PrivateRoute>
+                <Payment></Payment>
             </PrivateRoute>
         },
         {

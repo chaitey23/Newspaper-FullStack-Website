@@ -3,16 +3,37 @@ import { useNavigate } from 'react-router';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import UsePageTitle from '../../hooks/UsePageTitle/UsePageTitle';
+import { useQuery } from '@tanstack/react-query';
+import useAxiosSecure from '../../hooks/useAxiosSecure';
 
 const SubscriptionSection = () => {
-    UsePageTitle("SubscriptionSection")
+    UsePageTitle("Subscription Plans");
     const navigate = useNavigate();
+    const axiosSecure = useAxiosSecure();
 
-    const handleSubscribe = (planType) => {
-        navigate(`/subscription?plan=${planType}`);
+    // Fetch plans from MongoDB using TanStack Query
+    const {
+        data: plans = [],
+        isLoading,
+        error
+    } = useQuery({
+        queryKey: ['homepage-plans'],
+        queryFn: async () => {
+            const response = await axiosSecure.get('/plans');
+            return response.data;
+        }
+    });
+
+    const handleSubscribe = (planValue) => {
+        navigate(`/subscription`, { state: { plan: planValue } });
     };
 
-    // Animation variants (same as before)
+    // Format price for display
+    const formatPrice = (price) => {
+        return `$${parseFloat(price).toFixed(2)}`;
+    };
+
+    // Animation variants
     const containerVariants = {
         hidden: { opacity: 0 },
         visible: {
@@ -36,64 +57,35 @@ const SubscriptionSection = () => {
         }
     };
 
-    // ✅ CORRECTED PLANS FOR NEWSPAPER WEBSITE
-    const plans = [
-        {
-            id: 'basic',
-            title: 'Basic Reader',
-            price: '$4.99',
-            period: 'month',
-            popular: false,
-            features: [
-                'Access to all free articles',
-                'Limited premium articles (5/month)',
-                'Basic search functionality',
-                'Email newsletter subscription',
-                'Ad-supported experience'
-            ],
-            buttonText: 'Start Reading',
-            note: 'Perfect for casual readers'
-        },
-        {
-            id: 'premium',
-            title: 'Premium Subscriber',
-            price: '$9.99',
-            period: 'month',
-            popular: true,
-            features: [
-                'Unlimited premium articles',
-                'Ad-free reading experience',
-                'Advanced search filters',
-                'Download articles for offline',
-                'Early access to exclusive content',
-                'Priority customer support'
-            ],
-            buttonText: 'Go Premium',
-            note: 'Most popular choice'
-        },
-        {
-            id: 'family',
-            title: 'Family Plan',
-            price: '$14.99',
-            period: 'month',
-            popular: false,
-            features: [
-                'Up to 5 family members',
-                'All Premium features',
-                'Individual reading profiles',
-                'Parental controls',
-                'Family content sharing',
-                'Dedicated family support'
-            ],
-            buttonText: 'Family Access',
-            note: 'Share with your household'
-        }
-    ];
-
     const [headerRef, headerInView] = useInView({
         triggerOnce: true,
         threshold: 0.1
     });
+
+    // Loading state
+    if (isLoading) {
+        return (
+            <div className="bg-gradient-to-br from-gray-50 to-[#faf6f0] py-16 px-4 sm:px-6 lg:px-8 mt-16">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#c99e66] mx-auto mb-4"></div>
+                    <p className="text-gray-600 text-lg">Loading subscription plans...</p>
+                </div>
+            </div>
+        );
+    }
+
+    // Error state
+    if (error) {
+        return (
+            <div className="bg-gradient-to-br from-gray-50 to-[#faf6f0] py-16 px-4 sm:px-6 lg:px-8 mt-16">
+                <div className="text-center">
+                    <div className="text-red-500 text-4xl mb-4">⚠️</div>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-2">Failed to load plans</h2>
+                    <p className="text-gray-600 mb-4">Please try again later</p>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="bg-gradient-to-br from-gray-50 to-[#faf6f0] py-16 px-4 sm:px-6 lg:px-8 mt-16">
@@ -126,23 +118,28 @@ const SubscriptionSection = () => {
                 viewport={{ once: true, amount: 0.3 }}
                 className="grid grid-cols-1 gap-8 lg:grid-cols-3 lg:gap-8 max-w-7xl mx-auto"
             >
-                {plans.map((plan, index) => (
+                {plans.map((plan,) => (
                     <motion.div
-                        key={plan.id}
+                        key={plan._id}
                         variants={itemVariants}
                         whileHover={{ y: -10, scale: 1.02 }}
                         className="relative"
                     >
-                        <div className={`relative rounded-2xl transition-all duration-300 overflow-hidden h-full flex flex-col ${plan.popular
+                        <div className={`relative rounded-2xl transition-all duration-300  h-full flex flex-col ${plan.popular
                             ? 'bg-gradient-to-b from-[#c99e66] to-[#b08d5a] border-2 border-[#c99e66] shadow-2xl shadow-[#c99e66]/20'
                             : 'bg-white border border-gray-200 shadow-xl'
                             }`}>
 
                             {/* Popular Badge */}
-                            {plan.popular && (
+                            {plan.badge && (
                                 <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
-                                    <span className="bg-gray-900 text-white px-6 py-2 rounded-full text-sm font-semibold shadow-lg">
-                                        Most Popular
+                                    <span className={`px-4 py-2 rounded-full text-sm font-semibold shadow-lg ${plan.popular
+                                        ? 'bg-amber-200 text-[#8b6b3d]'
+                                        : plan.value === '1 minute'
+                                            ? 'bg-emerald-500 text-white'
+                                            : 'bg-amber-600 text-white'
+                                        }`}>
+                                        {plan.badge}
                                     </span>
                                 </div>
                             )}
@@ -151,16 +148,21 @@ const SubscriptionSection = () => {
                                 {/* Plan Title */}
                                 <h3 className={`text-2xl font-bold mb-4 ${plan.popular ? 'text-white' : 'text-gray-900'
                                     }`}>
-                                    {plan.title}
+                                    {plan.label}
                                 </h3>
 
                                 {/* Price */}
                                 <div className={`mb-6 ${plan.popular ? 'text-white' : 'text-gray-900'
                                     }`}>
                                     <span className="text-4xl font-bold">
-                                        {plan.price}
+                                        {formatPrice(plan.price)}
                                     </span>
-                                    <span className="text-lg opacity-80">/{plan.period}</span>
+                                    {plan.originalPrice && (
+                                        <span className={`text-lg line-through ml-2 ${plan.popular ? 'text-amber-200' : 'text-gray-400'
+                                            }`}>
+                                            {formatPrice(plan.originalPrice)}
+                                        </span>
+                                    )}
                                 </div>
 
                                 {/* Features List */}
@@ -189,19 +191,21 @@ const SubscriptionSection = () => {
                                 <motion.button
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
-                                    onClick={() => handleSubscribe(plan.id)}
-                                    className={`w-full py-4 px-6 rounded-full font-semibold transition-all duration-300 ${plan.popular
-                                        ? 'bg-white text-[#c99e66] hover:shadow-lg hover:shadow-white/20'
-                                        : 'bg-[#c99e66] text-white hover:bg-[#b08d5a] hover:shadow-lg hover:shadow-[#c99e66]/20 cursor-pointer'
+                                    onClick={() => handleSubscribe(plan.value)}
+                                    className={`w-full py-4 px-6 rounded-full 
+                                        cursor-pointer
+                                        font-semibold transition-all duration-300 ${plan.popular
+                                            ? 'bg-white text-[#c99e66] hover:shadow-lg hover:shadow-white/20'
+                                            : 'bg-[#c99e66] text-white hover:bg-[#b08d5a] hover:shadow-lg hover:shadow-[#c99e66]/20 cursor-pointer'
                                         }`}
                                 >
-                                    {plan.buttonText}
+                                    Get Started
                                 </motion.button>
 
-                                {/* Note */}
+                                {/* Duration */}
                                 <p className={`mt-4 text-center text-sm ${plan.popular ? 'text-white/80' : 'text-gray-500'
                                     }`}>
-                                    {plan.note}
+                                    {plan.value} • One-time payment
                                 </p>
                             </div>
                         </div>
@@ -218,7 +222,7 @@ const SubscriptionSection = () => {
                 className="text-center mt-16"
             >
                 <p className="text-gray-600 text-sm">
-                    All plans include access to our complete article catalog. Cancel anytime.
+                    All plans include access to premium articles. Cancel anytime.
                 </p>
             </motion.div>
         </div>
