@@ -3,8 +3,8 @@
 Welcome to the **Newspaper FullStack Website** frontend! This is a dynamic news aggregation platform built with **React**, **Firebase**, **React Router**, **Tailwind CSS**, and **TanStack Query**, designed to deliver trending and premium news articles seamlessly.
 
 ## Admin Credentials (For testing)
-- **Email:** admin@example.com  
-- **Password:** Admin@123  
+- **Email:** chaiteychowdhury@gmail.com
+- **Password:**  ProgramingHero01@
 
 ## Live Site
 [Live Demo Link](https://newspaper-fullstack-webs-53e81.web.app/)
